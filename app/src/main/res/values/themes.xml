@@ -3,7 +3,19 @@
     <style name="Base.Theme.CarMarketplaceApplication" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:statusBarColor">@color/white</item>
+<!--        <item name="android:statusBarColor">@color/white</item>-->
+
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="android:textColorHighlight"></item>
+
+    </style>
+
+    <style name="CardViewTopCornersRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeTopLeft">32dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
     <style name="Theme.CarMarketplaceApplication" parent="Base.Theme.CarMarketplaceApplication" />
