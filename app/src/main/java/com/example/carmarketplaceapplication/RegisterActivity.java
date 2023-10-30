@@ -21,9 +21,11 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText emailInput, passwordInput, confirmPasswordInput;
-    private TextInputLayout emailLayout, passwordLayout, confirmPasswordLayout;
+    private TextInputEditText usernameInput, emailInput, passwordInput, confirmPasswordInput;
+    private TextInputLayout usernameLayout, emailLayout, passwordLayout, confirmPasswordLayout;
     private Button registerButton;
+    private GenericTextWatcher emailWatcher, passwordWatcher, confirmPasswordWatcher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,19 +35,27 @@ public class RegisterActivity extends AppCompatActivity {
         setupSignupPrompt();
 
         // Initialize the fields and layouts
+        usernameInput = findViewById(R.id.username_input);
         emailInput = findViewById(R.id.email_input);
         passwordInput = findViewById(R.id.password_input);
         confirmPasswordInput = findViewById(R.id.confirm_password_input);
         registerButton = findViewById(R.id.register_button);
 
+        usernameLayout = findViewById(R.id.username_layout);
         emailLayout = findViewById(R.id.email_layout);
         passwordLayout = findViewById(R.id.password_layout);
         confirmPasswordLayout = findViewById(R.id.confirm_password_layout);
 
-        // Setup the TextWatchers for real-time validation
-        emailInput.addTextChangedListener(createTextWatcherForEmail());
-        passwordInput.addTextChangedListener(createTextWatcherForPassword());
-        confirmPasswordInput.addTextChangedListener(createTextWatcherForConfirmPassword());
+        // Initialize generic TextWatchers
+        GenericTextWatcher usernameWatcher = new GenericTextWatcher(usernameLayout, username -> !username.isEmpty(), getString(R.string.error_required_username));
+        GenericTextWatcher emailWatcher = new GenericTextWatcher(emailLayout, this::isValidEmail, getString(R.string.error_invalid_email));
+        GenericTextWatcher passwordWatcher = new GenericTextWatcher(passwordLayout, this::isValidPassword, getString(R.string.error_weak_password));
+        GenericTextWatcher confirmPasswordWatcher = new GenericTextWatcher(confirmPasswordLayout, password -> password.equals(passwordInput.getText().toString()), getString(R.string.error_passwords_mismatch));
+
+        usernameInput.addTextChangedListener(usernameWatcher);
+        emailInput.addTextChangedListener(emailWatcher);
+        passwordInput.addTextChangedListener(passwordWatcher);
+        confirmPasswordInput.addTextChangedListener(confirmPasswordWatcher);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,73 +104,6 @@ public class RegisterActivity extends AppCompatActivity {
         signupText.setMovementMethod(LinkMovementMethod.getInstance());  // To make the clickable span responsive
     }
 
-    private TextWatcher createTextWatcherForEmail() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!isValidEmail(charSequence.toString())) {
-                    emailLayout.setError("Invalid email format");
-                } else {
-                    emailLayout.setError(null); // Clear the error
-                    emailLayout.setErrorEnabled(false); // Disable the error, so it removes the extra space
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        };
-    }
-
-    private TextWatcher createTextWatcherForPassword() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!isValidPassword(charSequence.toString())) {
-                    passwordLayout.setError("Password too weak");
-                } else {
-                    passwordLayout.setError(null); // Clear the error
-                    passwordLayout.setErrorEnabled(false); // Disable the error, so it removes the extra space
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        };
-    }
-
-    private TextWatcher createTextWatcherForConfirmPassword() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String password = passwordInput.getText().toString();
-                if (!charSequence.toString().equals(password)) {
-                    confirmPasswordLayout.setError("Passwords do not match");
-                } else {
-                    confirmPasswordLayout.setError(null); // Clear the error
-                    confirmPasswordLayout.setErrorEnabled(false); // Disable the error, so it removes the extra space
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        };
-    }
-
     // Utility method to validate email format
     private boolean isValidEmail(String email) {
         // Simple validation for demonstration, consider using more robust validation
@@ -174,29 +117,61 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean areFieldsValid() {
-        String email = emailInput.getText().toString();
-        String password = passwordInput.getText().toString();
-        String confirmPassword = confirmPasswordInput.getText().toString();
+        // Retrieve the values from the input fields
+        String username = usernameInput.getText().toString().trim();
+        String email = emailInput.getText().toString().trim();
+        String password = passwordInput.getText().toString().trim();
+        String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
-        // Validate the fields
-        boolean emailIsValid = isValidEmail(email);
-        boolean passwordIsValid = isValidPassword(password);
-        boolean passwordsMatch = password.equals(confirmPassword);
+        // Flags indicating whether fields are valid
+        boolean isUsernameValid = true, isEmailValid = true, isPasswordValid = true, isConfirmPasswordValid = true;
 
-        // Maybe update error messages if needed
-        if (!emailIsValid) {
-            emailLayout.setError("Invalid email format");
-        }
-        if (!passwordIsValid) {
-            passwordLayout.setError("Password too weak");
-        }
-        if (!passwordsMatch) {
-            confirmPasswordLayout.setError("Passwords do not match");
+        // Check if the fields are empty and set appropriate error messages
+        if (username.isEmpty()) {
+            usernameLayout.setError(getString(R.string.error_required_username));
+            isUsernameValid = false;
+        } else {
+            usernameLayout.setError(null); // Clear previous error
+            usernameLayout.setErrorEnabled(false);
         }
 
-        // Determine if all validations pass
-        return emailIsValid && passwordIsValid && passwordsMatch;
+        if (email.isEmpty()) {
+            emailLayout.setError(getString(R.string.error_required_email));
+            isEmailValid = false;
+        } else if (!isValidEmail(email)) { // Your method to check for a valid email pattern
+            emailLayout.setError(getString(R.string.error_invalid_email));
+            isEmailValid = false;
+        } else {
+            emailLayout.setError(null); // Clear previous error
+            emailLayout.setErrorEnabled(false);
+        }
+
+        if (password.isEmpty()) {
+            passwordLayout.setError(getString(R.string.error_required_password));
+            isPasswordValid = false;
+        } else if (!isValidPassword(password)) { // Your method to check for a valid password
+            passwordLayout.setError(getString(R.string.error_weak_password));
+            isPasswordValid = false;
+        } else {
+            passwordLayout.setError(null); // Clear previous error
+            passwordLayout.setErrorEnabled(false);
+        }
+
+        if (confirmPassword.isEmpty()) {
+            confirmPasswordLayout.setError(getString(R.string.error_required_confirmation_password));
+            isConfirmPasswordValid = false;
+        } else if (!confirmPassword.equals(password)) {
+            confirmPasswordLayout.setError(getString(R.string.error_passwords_mismatch));
+            isConfirmPasswordValid = false;
+        } else {
+            confirmPasswordLayout.setError(null); // Clear previous error
+            confirmPasswordLayout.setErrorEnabled(false);
+        }
+
+        // Return true only if all validations are passed
+        return isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
     }
+
 
     private void performRegistration() {
         String email = emailInput.getText().toString();
