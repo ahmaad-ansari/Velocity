@@ -38,17 +38,10 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/buttonNavigateToSignUp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Don't have an account? Sign up" />
+        android:text="Sign Up" />
 
 </LinearLayout>

@@ -3,8 +3,9 @@
     <style name="Base.Theme.CarMarketplaceApplication" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="colorAccent">@color/secondary_color</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorSecondary">@color/secondary</item>
 
     </style>
 </resources>

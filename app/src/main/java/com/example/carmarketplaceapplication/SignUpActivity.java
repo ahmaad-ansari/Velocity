@@ -11,31 +11,33 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     private TextInputLayout mEmailLayout, mPasswordLayout;
+    private EditText mPasswordField, mEmailField;
+    private Button mSignUpButton;
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
 
         mEmailLayout = findViewById(R.id.layoutEmail);
         mPasswordLayout = findViewById(R.id.layoutPassword);
-        Button mLoginButton = findViewById(R.id.buttonLogin);
-        Button mSignupButton = findViewById(R.id.buttonNavigateToSignUp);
+        mSignUpButton = findViewById(R.id.buttonSignup);
+        mPasswordField = findViewById(R.id.editTextPassword);
+        mEmailField = findViewById(R.id.editTextEmail);
 
-        mLoginButton.setOnClickListener(view -> attemptLogin());
-        mSignupButton.setOnClickListener(view -> navigateToSignUp());
+        mSignUpButton.setOnClickListener(view -> attemptSignUp());
     }
 
-    private void attemptLogin() {
+    private void attemptSignUp() {
         mEmailLayout.setError(null); // Reset error
         mPasswordLayout.setError(null); // Reset error
 
@@ -48,20 +50,18 @@ public class LoginActivity extends AppCompatActivity {
 
         // Show a loading indicator
 
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     // Hide loading indicator
 
                     if (task.isSuccessful()) {
                         navigateToMain();
                     } else {
-                        // If login fails, display a message to the user.
-                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                            mPasswordLayout.setError("Invalid password. Try again.");
-                        } else if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                            mEmailLayout.setError("No account found with this email.");
+                        // If sign-up fails, display a message to the user.
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            mEmailLayout.setError("This email address is already in use.");
                         } else {
-                            Toast.makeText(LoginActivity.this, "Login failed: " +
+                            Toast.makeText(SignUpActivity.this, "Sign-up failed: " +
                                     task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -83,6 +83,9 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError("Required.");
             valid = false;
+        } else if (password.length() < 6) {
+            mPasswordLayout.setError("Password must be at least 6 characters.");
+            valid = false;
         } else {
             mPasswordLayout.setError(null);
         }
@@ -91,11 +94,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToMain() {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
         finish();
     }
 
-    private void navigateToSignUp() {
-        startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            // User is signed in, navigate to the main activity
+            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            // User sign-up failed, prompt the user to try again
+            mPasswordField.setText("");  // Clear the password field
+            // Optionally, clear the email field if you want the user to start over
+            mEmailField.setText("");
+
+            // Enable a 'try again' button or show additional messages if needed
+            // For example:
+            mSignUpButton.setEnabled(true);
+            mSignUpButton.setText("Try Again");
+
+            // Log the error or show a message
+            // Log.e("SignUpActivity", "Sign-up failed.");
+            // This is optional since you might be showing a toast already
+        }
     }
 }

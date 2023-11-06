@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "979662235062",
+    "project_id": "velocity-34a76",
+    "storage_bucket": "velocity-34a76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979662235062:android:684782ab197bc55cb8cd17",
+        "android_client_info": {
+          "package_name": "com.example.carmarketplaceapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDarJpda-9UybmdV338MlVTXai0X9ANQao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
