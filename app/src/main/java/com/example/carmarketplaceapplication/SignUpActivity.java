@@ -18,7 +18,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private TextInputLayout mEmailLayout, mPasswordLayout;
     private EditText mPasswordField, mEmailField;
-    private Button mSignUpButton;
     private FirebaseAuth mAuth;
 
     @Override
@@ -30,11 +29,14 @@ public class SignUpActivity extends AppCompatActivity {
 
         mEmailLayout = findViewById(R.id.layoutEmail);
         mPasswordLayout = findViewById(R.id.layoutPassword);
-        mSignUpButton = findViewById(R.id.buttonSignup);
         mPasswordField = findViewById(R.id.editTextPassword);
         mEmailField = findViewById(R.id.editTextEmail);
 
+        Button mSignUpButton = findViewById(R.id.buttonSignup);
+        Button mLoginButton = findViewById(R.id.buttonNavigateToLogin);
+
         mSignUpButton.setOnClickListener(view -> attemptSignUp());
+        mLoginButton.setOnClickListener(view -> navigateToLogin());
     }
 
     private void attemptSignUp() {
@@ -98,26 +100,7 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            // User is signed in, navigate to the main activity
-            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            // User sign-up failed, prompt the user to try again
-            mPasswordField.setText("");  // Clear the password field
-            // Optionally, clear the email field if you want the user to start over
-            mEmailField.setText("");
-
-            // Enable a 'try again' button or show additional messages if needed
-            // For example:
-            mSignUpButton.setEnabled(true);
-            mSignUpButton.setText("Try Again");
-
-            // Log the error or show a message
-            // Log.e("SignUpActivity", "Sign-up failed.");
-            // This is optional since you might be showing a toast already
-        }
+    private void navigateToLogin() {
+        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
     }
 }

@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">Car Marketplace Application</string>
-
-    <string name="logo">Velocity</string>
-
+    <string name="logo">Logo</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="not_a_member_sign_up">Not a member? Sign up now!</string>
-    <string name="sign_up">Sign up</string>
-
-
+    <string name="sign_up">Sign Up</string>
+    <string name="dont_have_account_sign_up">Don\'t have an account? Sign up here.</string>
+    <string name="have_an_account_login">Already have an account? Login here.</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="name">Name</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
 </resources>
