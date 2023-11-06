@@ -9,6 +9,11 @@
     <color name="secondaryDarkColor">#000000</color>
     <!-- Define a standard error color -->
     <color name="errorColor">#B00020</color>
+
+    <color name="m3_sys_color_surface_variant">#F6F6F6</color>
+    <color name="m3_sys_color_on_surface_variant">#534E60</color>
+
+
     <!-- Other colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

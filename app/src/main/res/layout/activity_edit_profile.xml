@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity">
+    tools:context=".EditProfileActivity">
 
-    <!-- activity_profile.xml -->
+    <!-- activity_edit_profile.xml -->
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,43 +20,35 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/imageViewProfilePicture"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_baseline_account_circle_24"
-                android:contentDescription="@string/profile_picture"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
-
-            <TextView
-                android:id="@+id/textViewName"
-                style="@style/TextAppearance.Material3.HeadlineMedium"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutName"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/name"
-                android:gravity="center_horizontal" />
+                android:layout_marginTop="8dp"
+                app:boxBackgroundColor="@color/m3_sys_color_surface_variant"
+                app:hintTextColor="@color/m3_sys_color_on_surface_variant">
 
-            <TextView
-                android:id="@+id/textViewEmail"
-                style="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/email"
-                android:gravity="center_horizontal" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Additional profile fields here -->
+            <!-- Additional fields for editing profile details -->
 
             <Button
-                android:id="@+id/buttonEditProfile"
+                android:id="@+id/buttonSaveProfile"
                 style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
-                android:text="@string/edit_profile" />
+                android:text="@string/save" />
         </LinearLayout>
     </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
