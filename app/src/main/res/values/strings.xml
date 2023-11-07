@@ -9,6 +9,17 @@
     <string name="have_an_account_login">Already have an account? Login here.</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="name">Name</string>
-    <string name="edit_profile">Edit Profile</string>
     <string name="save">Save</string>
+
+
+    <string name="full_name_placeholder">Full Name</string>
+    <string name="email_placeholder">Email</string>
+    <string name="city_placeholder">City</string>
+    <string name="province_placeholder">Province</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="phone_number_placeholder">Phone Number</string>
+    <string name="first_name_placeholder">First Name</string>
+    <string name="last_name_placeholder">Last Name</string>
+    <string name="save_profile">Save Profile</string>
+
 </resources>

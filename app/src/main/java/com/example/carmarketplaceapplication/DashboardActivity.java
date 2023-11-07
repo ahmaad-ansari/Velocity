@@ -17,6 +17,16 @@ public class DashboardActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        // Find the button by its ID
+        Button buttonViewProfile = findViewById(R.id.buttonViewProfile);
+
+        // Set an OnClickListener on the button
+        buttonViewProfile.setOnClickListener(view -> {
+            // Start the ProfileActivity
+            Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+
         Button logoutButton = findViewById(R.id.buttonLogout);
         logoutButton.setOnClickListener(view -> {
             mAuth.signOut();

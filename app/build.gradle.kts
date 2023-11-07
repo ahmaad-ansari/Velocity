@@ -51,4 +51,11 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:latest_version")
 
+    implementation("com.google.firebase:firebase-firestore:24.1.0")
+    implementation("com.google.firebase:firebase-auth:21.0.1")
+    implementation("com.google.gms:google-services:4.3.13")
+
+
+
+
 }

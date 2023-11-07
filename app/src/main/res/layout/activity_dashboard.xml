@@ -6,10 +6,22 @@
 
     <!-- Layout for DashboardActivity, you can customize it as per your needs -->
     <Button
+        android:id="@+id/buttonViewProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Profile"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true" />
+
+    <Button
         android:id="@+id/buttonLogout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:layout_centerInParent="true"/>
+        android:layout_below="@id/buttonViewProfile"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Add more buttons here and use android:layout_below to position them -->
 
 </RelativeLayout>
