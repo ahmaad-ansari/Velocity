@@ -4,19 +4,61 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
+        <item name="colorOnPrimary">@color/white</item> <!-- Text color on primary color -->
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/white</item> <!-- Text color on secondary color -->
+
         <!-- Background color. -->
         <item name="android:colorBackground">@color/white</item>
+        <item name="colorOnBackground">@color/black</item> <!-- Text color on background color -->
+
         <!-- Surface color. -->
-        <item name="colorSurface">@color/white</item>
+        <item name="colorSurface">@color/m3_sys_color_surface_variant</item>
+        <item name="colorOnSurface">@color/m3_sys_color_on_surface_variant</item> <!-- Text color on surface color -->
+
         <!-- Error color. -->
         <item name="colorError">@color/errorColor</item>
+        <item name="colorOnError">@color/white</item> <!-- Text color on error color -->
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/primaryDarkColor</item>
-        <!-- Customize other color attributes if needed -->
+        <!-- Customize navigation bar color -->
+        <item name="android:navigationBarColor">@color/primaryDarkColor</item>
+
+        <!-- Button Styles -->
+        <item name="buttonStyle">@style/Widget.Material3.Button</item>
+        <item name="materialButtonStyle">@style/Widget.Material3.Button</item>
+
+        <!-- EditText Style -->
+        <item name="editTextStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
+
+        <!-- AppBar Style -->
+        <item name="toolbarStyle">@style/Widget.Material3.Toolbar</item>
+
+        <!-- Floating Action Button Style -->
+        <item name="floatingActionButtonStyle">@style/Theme.CarMarketplaceApplication.FabStyle</item>
+
+        <!-- Bottom Navigation View Style -->
+        <item name="bottomNavigationStyle">@style/Theme.CarMarketplaceApplication.BottomNavigation</item>
     </style>
+
+    <!-- FAB Style -->
+    <style name="Theme.CarMarketplaceApplication.FabStyle" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/primaryColor</item>
+        <!-- Customize other properties as needed -->
+    </style>
+
+    <!-- Bottom Navigation View Style -->
+    <style name="Theme.CarMarketplaceApplication.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemIconTint">@color/secondaryColor</item>
+        <item name="itemTextColor">@color/secondaryColor</item>
+        <item name="backgroundTint">@color/primaryColor</item>
+    </style>
+
+    <!-- Other styles... -->
 
     <style name="CircleShape" parent="">
         <item name="cornerFamily">rounded</item>
@@ -25,8 +67,3 @@
 
     <style name="Theme.CarMarketplaceApplication" parent="Base.Theme.CarMarketplaceApplication" />
 </resources>
-
-
-
-
-

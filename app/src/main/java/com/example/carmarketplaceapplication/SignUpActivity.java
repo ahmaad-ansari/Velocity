@@ -3,22 +3,28 @@ package com.example.carmarketplaceapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private TextInputLayout mEmailLayout, mPasswordLayout;
-    private EditText mPasswordField, mEmailField;
+    private TextInputLayout mEmailLayout, mPasswordLayout, mFirstNameLayout, mLastNameLayout, mAddressLayout, mPhoneLayout;
+    private EditText mEmailField, mPasswordField, mFirstNameField, mLastNameField, mPhoneField;
+    private AutoCompleteTextView mAddressField;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,62 +32,129 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
-        mEmailLayout = findViewById(R.id.layoutEmail);
-        mPasswordLayout = findViewById(R.id.layoutPassword);
-        mPasswordField = findViewById(R.id.editTextPassword);
-        mEmailField = findViewById(R.id.editTextEmail);
+        // Initialize all TextInput layouts
+        mFirstNameLayout = findViewById(R.id.layout_first_name);
+        mLastNameLayout = findViewById(R.id.layout_last_name);
+        mEmailLayout = findViewById(R.id.layout_email);
+        mPhoneLayout = findViewById(R.id.layout_phone_number);
+        mAddressLayout = findViewById(R.id.layout_address);
+        mPasswordLayout = findViewById(R.id.layout_password);
 
-        Button mSignUpButton = findViewById(R.id.buttonSignup);
-        Button mLoginButton = findViewById(R.id.buttonNavigateToLogin);
+        // Initialize all EditText fields
+        mFirstNameField = findViewById(R.id.editText_first_name);
+        mLastNameField = findViewById(R.id.editText_last_name);
+        mEmailField = findViewById(R.id.editText_email);
+        mAddressField = findViewById(R.id.autoCompleteTextViewAddress);
+        mPhoneField = findViewById(R.id.editText_phone_number);
+        mPasswordField = findViewById(R.id.editText_password);
+
+        Button mSignUpButton = findViewById(R.id.button_sign_up);
+        TextView mLoginTextView = findViewById(R.id.textView_login);
 
         mSignUpButton.setOnClickListener(view -> attemptSignUp());
-        mLoginButton.setOnClickListener(view -> navigateToLogin());
+        mLoginTextView.setOnClickListener(view -> navigateToLogin());
+
+        new AddressAutocompleteHelper(this, mAddressField);
     }
 
     private void attemptSignUp() {
-        mEmailLayout.setError(null); // Reset error
-        mPasswordLayout.setError(null); // Reset error
+        boolean validForm = validateForm(
+                mFirstNameField.getText().toString().trim(),
+                mLastNameField.getText().toString().trim(),
+                mEmailField.getText().toString().trim(),
+                mPasswordField.getText().toString().trim(),
+                mAddressField.getText().toString().trim(),
+                mPhoneField.getText().toString().trim()
+        );
 
-        String email = mEmailLayout.getEditText().getText().toString().trim();
-        String password = mPasswordLayout.getEditText().getText().toString().trim();
-
-        if (!validateForm(email, password)) {
+        if (!validForm) {
             return;
         }
 
         // Show a loading indicator
+
+        String email = mEmailField.getText().toString().trim();
+        String password = mPasswordField.getText().toString().trim();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     // Hide loading indicator
 
                     if (task.isSuccessful()) {
-                        navigateToMain();
+                        // Save additional fields in Firestore
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        UserProfile userProfile = new UserProfile(
+                                mFirstNameField.getText().toString().trim(),
+                                mLastNameField.getText().toString().trim(),
+                                mAddressField.getText().toString().trim(),
+                                firebaseUser.getEmail(),
+                                mPhoneField.getText().toString().trim(), // Assuming you are collecting the phone number here
+                                "", // ProfileImageUrl can be set after uploading an image
+                                firebaseUser.getUid()
+                        );
+
+                        mFirestore.collection("users").document(firebaseUser.getUid())
+                                .set(userProfile)
+                                .addOnSuccessListener(aVoid -> navigateToMain())
+                                .addOnFailureListener(e -> {
+                                    // Handle the error, e.g., show a toast
+                                    Toast.makeText(SignUpActivity.this, "Error saving user profile: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                });
                     } else {
                         // If sign-up fails, display a message to the user.
-                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                            mEmailLayout.setError("This email address is already in use.");
-                        } else {
-                            Toast.makeText(SignUpActivity.this, "Sign-up failed: " +
-                                    task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                        }
+                        Toast.makeText(SignUpActivity.this, "Authentication failed: " + task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    private boolean validateForm(String email, String password) {
+    private boolean validateForm(String firstName, String lastName, String email, String password, String address, String phone) {
         boolean valid = true;
 
-        // Validate email
+        // Validate the new fields
+        if (TextUtils.isEmpty(firstName)) {
+            mFirstNameLayout.setError("Required.");
+            valid = false;
+        } else {
+            mFirstNameLayout.setError(null);
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            mLastNameLayout.setError("Required.");
+            valid = false;
+        } else {
+            mLastNameLayout.setError(null);
+        }
+
+        if (TextUtils.isEmpty(address)) {
+            mAddressLayout.setError("Required.");
+            valid = false;
+        } else {
+            mAddressLayout.setError(null);
+        }
+
+        if (TextUtils.isEmpty(phone)) {
+            mPhoneLayout.setError("Required.");
+            valid = false;
+        } else if (!Patterns.PHONE.matcher(phone).matches()) {
+            mPhoneLayout.setError("Please enter a valid phone number.");
+            valid = false;
+        } else {
+            mPhoneLayout.setError(null);
+        }
+
+        // Existing validation
         if (TextUtils.isEmpty(email)) {
             mEmailLayout.setError("Required.");
+            valid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            mEmailLayout.setError("Please enter a valid email address.");
             valid = false;
         } else {
             mEmailLayout.setError(null);
         }
 
-        // Validate password
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError("Required.");
             valid = false;

@@ -4,7 +4,6 @@ public class UserProfile {
     private String uid;
     private String firstName;
     private String lastName;
-    private String username;
     private String address;
     private String email;
     private String phoneNumber;
@@ -14,16 +13,14 @@ public class UserProfile {
     public UserProfile() {
     }
 
-    public UserProfile(String uid, String firstName, String lastName, String username,
-                       String address, String email, String phoneNumber, String profileImageUrl) {
-        this.uid = uid;
+    public UserProfile(String firstName, String lastName, String address, String email, String phoneNumber, String profileImageUrl, String uid) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
         this.address = address;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.profileImageUrl = profileImageUrl;
+        this.uid = uid;
     }
 
     // Getters and setters for each field
@@ -51,19 +48,11 @@ public class UserProfile {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String city) {
         this.address = address;
     }
 
