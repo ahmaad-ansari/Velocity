@@ -1,20 +1,23 @@
 <resources>
-    <color name="primaryColor">#286AFE</color>
-    <color name="secondaryColor">#081327</color>
-    <color name="accentBackgroundColor">#F6F6F6</color>
-    <!-- You can also define the light and dark variants if needed -->
-    <color name="primaryLightColor">#5a8fff</color>
-    <color name="primaryDarkColor">#0046cb</color>
-    <color name="secondaryLightColor">#3a3f55</color>
-    <color name="secondaryDarkColor">#000000</color>
-    <!-- Define a standard error color -->
-    <color name="errorColor">#B00020</color>
+    <!-- Primary Blue theme color -->
+    <color name="primaryColor">#0D47A1</color> <!-- Deep, professional blue -->
+    <color name="primaryLightColor">#5472D3</color> <!-- Lighter shade for the primary color -->
+    <color name="primaryDarkColor">#002171</color> <!-- Darker shade for the primary color -->
 
-    <color name="m3_sys_color_surface_variant">#F6F6F6</color>
-    <color name="m3_sys_color_on_surface_variant">#534E60</color>
+    <!-- Secondary Blue theme color -->
+    <color name="secondaryColor">#90CAF9</color> <!-- Soft, muted light blue -->
+    <color name="secondaryLightColor">#C3FDFF</color> <!-- Very light shade for the secondary color -->
+    <color name="secondaryDarkColor">#5D99C6</color> <!-- Darker shade for the secondary color -->
 
+    <!-- Surface and Background Colors -->
+    <color name="surfaceColor">#FFFFFF</color> <!-- White surface -->
+    <color name="backgroundColor">#F4F4F4</color> <!-- Light grey background -->
 
-    <!-- Other colors -->
+    <!-- Error Colors -->
+    <color name="errorColor">#D32F2F</color> <!-- Standard Material error color -->
+    <color name="onErrorColor">#FFFFFF</color> <!-- White text on error color -->
+
+    <!-- Other necessary colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 </resources>

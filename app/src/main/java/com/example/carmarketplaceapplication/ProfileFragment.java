@@ -2,14 +2,16 @@ package com.example.carmarketplaceapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,9 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileActivity extends AppCompatActivity {
-
-    // Remove the TextView declarations as they are no longer used
+public class ProfileFragment extends Fragment {
 
     private EditText mFirstNameField, mLastNameField, mEmailField, mPhoneNumberField;
     private AutoCompleteTextView mAddressField;
@@ -32,50 +32,50 @@ public class ProfileActivity extends AppCompatActivity {
     private UserProfile originalUserData;
     private AddressAutocompleteHelper addressAutocompleteHelper;
 
-
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
     private FirebaseUser currentUser;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
 
         // Initialize EditTexts
-        mFirstNameField = findViewById(R.id.editTextFirstName);
-        mLastNameField = findViewById(R.id.editTextLastName);
-        mEmailField = findViewById(R.id.editTextEmail);
-        mAddressField = findViewById(R.id.autoCompleteTextViewAddress);
-        mPhoneNumberField = findViewById(R.id.editTextPhoneNumber);
+        mFirstNameField = view.findViewById(R.id.editTextFirstName);
+        mLastNameField = view.findViewById(R.id.editTextLastName);
+        mEmailField = view.findViewById(R.id.editTextEmail);
+        mAddressField = view.findViewById(R.id.autoCompleteTextViewAddress);
+        mPhoneNumberField = view.findViewById(R.id.editTextPhoneNumber);
 
-        imageViewProfilePicture = findViewById(R.id.imageViewProfilePicture);
+        imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
 
-        mEditProfileButton = findViewById(R.id.buttonEditProfile);
-        mSaveProfileButton = findViewById(R.id.buttonSaveProfile);
-        mCancelEditsButton = findViewById(R.id.buttonCancel);
-        mLogoutButton = findViewById(R.id.buttonLogout);
+        mEditProfileButton = view.findViewById(R.id.buttonEditProfile);
+        mSaveProfileButton = view.findViewById(R.id.buttonSaveProfile);
+        mCancelEditsButton = view.findViewById(R.id.buttonCancel);
+        mLogoutButton = view.findViewById(R.id.buttonLogout);
 
-        mEditProfileButton.setOnClickListener(view -> enableEditMode());
-        mSaveProfileButton.setOnClickListener(view -> saveProfile());
-        mCancelEditsButton.setOnClickListener(view -> cancelEdits());
+        mEditProfileButton.setOnClickListener(view1 -> enableEditMode());
+        mSaveProfileButton.setOnClickListener(view12 -> saveProfile());
+        mCancelEditsButton.setOnClickListener(view13 -> cancelEdits());
 
-        mLogoutButton.setOnClickListener(view -> {
+        mLogoutButton.setOnClickListener(view14 -> {
             mAuth.signOut();
             navigateToLogin();
         });
 
         loadUserProfile();
+
+        return view;
     }
 
     private void enableEditMode() {
         // Make EditTexts editable
         setEditTextsEditable(true);
-        addressAutocompleteHelper = new AddressAutocompleteHelper(this, mAddressField);
+        addressAutocompleteHelper = new AddressAutocompleteHelper(requireContext(), mAddressField);
 
         mSaveProfileButton.setVisibility(View.VISIBLE);
         mCancelEditsButton.setVisibility(View.VISIBLE);
@@ -83,10 +83,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void navigateToLogin() {
-        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+        Intent intent = new Intent(requireActivity(), LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
+        requireActivity().finish();
     }
 
     private void saveProfile() {
@@ -107,13 +107,13 @@ public class ProfileActivity extends AppCompatActivity {
             mFirestore.collection("users").document(currentUser.getUid())
                     .update(updatedProfile)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(ProfileActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
                         setEditTextsEditable(false);
                         mSaveProfileButton.setVisibility(View.GONE);
                         mCancelEditsButton.setVisibility(View.GONE);
                         mEditProfileButton.setVisibility(View.VISIBLE);
                     })
-                    .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -135,7 +135,6 @@ public class ProfileActivity extends AppCompatActivity {
         // Optionally, disable the fields to prevent editing
         setEditTextsEditable(false);
     }
-
 
     private void setEditTextsEditable(boolean editable) {
         mFirstNameField.setEnabled(editable);
@@ -217,15 +216,15 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 originalUserData = new UserProfile(document.getString("firstName"), document.getString("lastName"), document.getString("address"), document.getString("email"), document.getString("phoneNumber"), null, null);
                                 // Set image from URL using your preferred image loading library
-                                // Glide.with(this).load(document.getString("profileImageUrl")).into(imageViewProfilePicture);
+                                // Glide.with(requireContext()).load(document.getString("profileImageUrl")).into(imageViewProfilePicture);
 
                                 // Initially make EditTexts not editable
                                 setEditTextsEditable(false);
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Document does not exist", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireContext(), "Document does not exist", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(ProfileActivity.this, "Failed to load user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Failed to load user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
