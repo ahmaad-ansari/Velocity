@@ -1,0 +1,117 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/backgroundColor">
+
+    <!-- Car Make Dropdown -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_car_make"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/car_make">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_car_make"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Car Model Dropdown -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_car_model"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/car_model"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_car_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Car Year -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_car_year"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/car_year"
+        android:layout_marginTop="8dp">
+
+        <EditText
+            android:id="@+id/editText_car_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:digits="1234567890"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Car Transmission Type Dropdown -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_transmission_type"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/transmission_type"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_transmission_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_drivetrain"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/drivetrain"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_drivetrain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false"
+            android:dropDownHeight="wrap_content"
+            android:dropDownWidth="match_parent"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!-- Car Fuel Type Dropdown -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_fuel_type"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/fuel_type"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_fuel_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <include layout="@layout/navigation_buttons"
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

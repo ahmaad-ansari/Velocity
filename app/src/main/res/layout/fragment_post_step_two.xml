@@ -1,0 +1,172 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Color Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_car_color"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/car_color"
+            android:layout_marginTop="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/autocomplete_car_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:editable="false"
+                android:dropDownHeight="wrap_content"
+                android:dropDownWidth="match_parent"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- Odometer Reading Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_odometer"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/odometer_reading"
+            android:inputType="number"
+            android:digits="1234567890"
+            android:maxLines="1"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/editText_odometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- Price Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_price"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/price"
+            android:inputType="number"
+            android:digits="1234567890"
+            android:maxLines="1"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/editText_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:digits="1234567890"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Description Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_description"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/editText_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="5"
+                android:maxLines="10"
+                android:scrollbars="vertical"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Number of Doors Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_number_of_doors"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/number_of_doors"
+            android:layout_marginTop="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/autocomplete_number_of_doors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:editable="false"
+                android:dropDownHeight="wrap_content"
+                android:dropDownWidth="match_parent"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Number of Seats Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_number_of_seats"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/number_of_seats"
+            android:layout_marginTop="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/autocomplete_number_of_seats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:editable="false"
+                android:dropDownHeight="wrap_content"
+                android:dropDownWidth="match_parent"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- Air Conditioning Checkbox -->
+        <CheckBox
+            android:id="@+id/checkbox_air_conditioning"
+            style="@style/Widget.Material3.CompoundButton.CheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/air_conditioning"/>
+
+        <!-- Navigation System Checkbox -->
+        <CheckBox
+            android:id="@+id/checkbox_navigation_system"
+            style="@style/Widget.Material3.CompoundButton.CheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/navigation_system"/>
+
+        <!-- Bluetooth Connectivity Checkbox -->
+        <CheckBox
+            android:id="@+id/checkbox_bluetooth_connectivity"
+            style="@style/Widget.Material3.CompoundButton.CheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bluetooth_connectivity"/>
+
+        <!-- Sunroof Checkbox -->
+        <CheckBox
+            android:id="@+id/checkbox_sunroof"
+            style="@style/Widget.Material3.CompoundButton.CheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sunroof"/>
+
+        <!-- Include navigation buttons -->
+        <include layout="@layout/navigation_buttons"
+            android:layout_marginTop="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</ScrollView>

@@ -17,6 +17,8 @@
     <color name="errorColor">#D32F2F</color> <!-- Standard Material error color -->
     <color name="onErrorColor">#FFFFFF</color> <!-- White text on error color -->
 
+    <color name="bottom_nav_item_color">@color/selector_bottom_nav_item_color</color>
+
     <!-- Other necessary colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>

@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new HomeFragment();
                 } else if (item.getItemId() == R.id.nav_profile) {
                     selectedFragment = new ProfileFragment();
+                } else if (item.getItemId() == R.id.nav_post) {
+                    selectedFragment = new PostFragment();
+                } else if (item.getItemId() == R.id.nav_search) {
+                    selectedFragment = new SearchFragment();
                 } else {
                     // Handle other menu items
                 }

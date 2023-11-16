@@ -25,10 +25,39 @@
         <item name="android:statusBarColor">@color/primaryDarkColor</item>
         <item name="android:navigationBarColor">@color/primaryDarkColor</item>
 
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+
         <!-- Other customizations can be added here -->
     </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemIconSize">24dp</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavigationActiveTextAppearance</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationInactiveTextAppearance</item>
+    </style>
+
+    <style name="BottomNavigationActiveTextAppearance" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/primaryColor</item>
+    </style>
+
+    <style name="BottomNavigationInactiveTextAppearance" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/secondaryColor</item>
+    </style>
+
     <style name="CircleShape" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="FilterButtonStyle" parent="Widget.Material3.Button.ElevatedButton">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+
+
 </resources>

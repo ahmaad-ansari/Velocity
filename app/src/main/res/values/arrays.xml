@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="car_makes">
+        <item>Toyota</item>
+        <item>Ford</item>
+        <item>Honda</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="car_models">
+        <item>Corolla</item>
+        <item>Mustang</item>
+        <item>Civic</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="car_years">
+        <item>2021</item>
+        <item>2020</item>
+        <item>2019</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="transmission_types">
+        <item>Automatic</item>
+        <item>Manual</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="drivetrain_types">
+        <item>Front-Wheel-Drive (FWD)</item>
+        <item>Rear-Wheel-Drive (RWD)</item>
+        <item>Four-Wheel-Drive (4WD)</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="car_colors">
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Black</item>
+        <item>White</item>
+        <item>Silver</item>
+        <item>Gray</item>
+        <item>Yellow</item>
+        <item>Orange</item>
+        <item>Purple</item>
+        <item>Brown</item>
+        <item>Gold</item>
+    </string-array>
+
+    <string-array name="car_doors">
+        <item>2</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6+</item>
+    </string-array>
+
+    <string-array name="car_seats">
+        <item>2</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7+</item>
+    </string-array>
+
+    <string-array name="fuel_types">
+        <item>Gasoline</item>
+        <item>Diesel</item>
+        <item>Electric</item>
+        <!-- Add more items as needed -->
+    </string-array>
+</resources>
