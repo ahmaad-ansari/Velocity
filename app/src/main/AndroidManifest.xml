@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.CAMERA"/>
 
 
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -22,6 +24,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarMarketplaceApplication"
         tools:targetApi="31">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.carmarketplaceapplication.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />

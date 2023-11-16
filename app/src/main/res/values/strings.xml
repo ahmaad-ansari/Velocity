@@ -53,5 +53,7 @@
     <string name="bluetooth_connectivity">Bluetooth Connectivity</string>
     <string name="sunroof">Sunroof</string>
     <string name="drivetrain">Drivetrain Type</string>
+    <string name="remove_image">Remove Image</string>
+    <string name="add_image">Add Image</string>
 
 </resources>
