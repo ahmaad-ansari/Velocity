@@ -47,13 +47,13 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_step_three, container, false);
 
-        gridView = view.findViewById(R.id.gridView);
+//        gridView = view.findViewById(R.id.gridView);
         btnAddImage = view.findViewById(R.id.btnAddImage);
         btnAddImage.setOnClickListener(v -> showImagePickOptions());
 
         imageUris = new ArrayList<>();
         imageAdapter = new ImageAdapter(getContext(), imageUris);
-        gridView.setAdapter(imageAdapter);
+//        gridView.setAdapter(imageAdapter);
 
         btnAddImage.setOnClickListener(v -> {
             // Add logic to show image picking options
