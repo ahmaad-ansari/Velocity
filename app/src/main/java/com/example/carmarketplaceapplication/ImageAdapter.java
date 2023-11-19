@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
@@ -47,7 +49,11 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         ImageView imageView = convertView.findViewById(R.id.image_view);
-        imageView.setImageURI(imageUris.get(position));
+
+        // Use Glide to load the image into the ImageView
+        Glide.with(context)
+                .load(imageUris.get(position))
+                .into(imageView);
 
         imageView.setOnClickListener(v -> {
             // Trigger the removal logic
@@ -56,6 +62,7 @@ public class ImageAdapter extends BaseAdapter {
 
         return convertView;
     }
+
 
     private void showRemoveDialog(int position) {
         new AlertDialog.Builder(context)

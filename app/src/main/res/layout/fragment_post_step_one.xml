@@ -1,9 +1,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/backgroundColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Square Button for Image Capture -->
+        <Button
+            android:id="@+id/btnCaptureImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/photo_capture_selector" /> <!-- Replace with your drawable -->
+
+        <!-- RecyclerView for Images and Videos -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_media"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
 
     <!-- Car Make Dropdown -->
     <com.google.android.material.textfield.TextInputLayout

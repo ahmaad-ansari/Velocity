@@ -3,6 +3,8 @@ package com.example.carmarketplaceapplication;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -26,6 +31,8 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAPTURE_IMAGE_REQUEST = 2;
+    private static final int REQUEST_CAMERA_PERMISSION = 100;
+
     private static final int MAX_IMAGES = 8;
     private String currentPhotoPath;
 
@@ -81,6 +88,17 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
     }
 
     private void captureImage() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        } else {
+            startCameraIntent();
+        }
+    }
+
+    private void startCameraIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
@@ -94,6 +112,19 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
                         "com.example.carmarketplaceapplication.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCameraIntent();
+            } else {
+                // Permission was denied. Handle the functionality that depends on this permission.
             }
         }
     }
@@ -118,26 +149,31 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST) {
+                // Handle gallery selection
                 if (data.getClipData() != null) {
                     int count = data.getClipData().getItemCount();
                     for (int i = 0; i < count; i++) {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                        if (imageUris.size() < MAX_IMAGES) {
-                            imageUris.add(imageUri);
-                        }
+                        addImageUriToList(imageUri);
                     }
                 } else if (data.getData() != null) {
                     Uri imageUri = data.getData();
-                    if (imageUris.size() < MAX_IMAGES) {
-                        imageUris.add(imageUri);
-                    }
+                    addImageUriToList(imageUri);
                 }
-                imageAdapter.notifyDataSetChanged();
             } else if (requestCode == CAPTURE_IMAGE_REQUEST) {
-                // Handle captured image
+                // Handle camera capture
+                Uri imageUri = Uri.fromFile(new File(currentPhotoPath));
+                addImageUriToList(imageUri);
             }
+            imageAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void addImageUriToList(Uri imageUri) {
+        if (imageUris.size() < MAX_IMAGES) {
+            imageUris.add(imageUri);
         }
     }
 
@@ -150,7 +186,7 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
 
     @Override
     protected void onNextClicked() {
-        if (!validateCurrentStep()) {
+        if (validateCurrentStep()) {
             // Navigate to the next step fragment
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
@@ -168,8 +204,6 @@ public class PostStepThreeFragment extends PostStepBaseFragment {
 
     @Override
     protected boolean validateCurrentStep() {
-        return false;
+        return true;
     }
-
-    // Add other required methods like permission checks
 }
