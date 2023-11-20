@@ -74,6 +74,9 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
         initializeImageSection(view);
 
+        Button btnPrevious = view.findViewById(R.id.button_previous);
+        btnPrevious.setVisibility(View.GONE);
+
         return view;
     }
 
@@ -243,12 +246,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         }
     }
 
-    @Override
-    protected void onPreviousClicked() {
-        if (getParentFragment() instanceof PostFragment) {
-            ((PostFragment) getParentFragment()).goToPreviousStep();
-        }
-    }
 
     @Override
     protected void onNextClicked() {
@@ -263,10 +260,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         }
     }
 
-    @Override
-    protected void onCancelClicked() {
-
-    }
 
     protected boolean validateCurrentStep() {
         // Perform validation logic here and return true if everything is correct

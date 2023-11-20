@@ -48,4 +48,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             };
 
+    public void showHomeFragment() {
+        HomeFragment homeFragment = new HomeFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, homeFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed
+                .commit();
+    }
 }

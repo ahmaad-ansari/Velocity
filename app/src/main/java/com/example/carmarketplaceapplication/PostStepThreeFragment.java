@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +24,9 @@ public class PostStepThreeFragment extends PostStepBaseFragment implements OnMap
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_step_three, container, false);
+
+        Button btnNext = view.findViewById(R.id.button_next);
+        btnNext.setText("Post");
 
         // Get a handle to the fragment and register the callback.
         // Use getChildFragmentManager() or getFragmentManager() based on your fragment setup
@@ -64,13 +68,6 @@ public class PostStepThreeFragment extends PostStepBaseFragment implements OnMap
     }
 
     @Override
-    protected void onPreviousClicked() {
-        if (getParentFragment() instanceof PostFragment) {
-            ((PostFragment) getParentFragment()).goToPreviousStep();
-        }
-    }
-
-    @Override
     protected void onNextClicked() {
         if (!validateCurrentStep()) {
             // Navigate to the next step fragment
@@ -81,11 +78,6 @@ public class PostStepThreeFragment extends PostStepBaseFragment implements OnMap
         } else {
             // Show error or validation feedback
         }
-    }
-
-    @Override
-    protected void onCancelClicked() {
-
     }
 
     @Override

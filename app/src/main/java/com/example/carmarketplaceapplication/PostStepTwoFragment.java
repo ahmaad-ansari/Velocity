@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -44,6 +45,9 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_two, container, false);
+
+        Button btnNext = view.findViewById(R.id.button_next);
+        btnNext.setText("View");
 
         // Get a handle to the fragment and register the callback.
         // Use getChildFragmentManager() or getFragmentManager() based on your fragment setup
@@ -92,13 +96,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     }
 
     @Override
-    protected void onPreviousClicked() {
-        if (getParentFragment() instanceof PostFragment) {
-            ((PostFragment) getParentFragment()).goToPreviousStep();
-        }
-    }
-
-    @Override
     protected void onNextClicked() {
         if (!validateCurrentStep()) {
             // Navigate to the next step fragment
@@ -111,10 +108,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         }
     }
 
-    @Override
-    protected void onCancelClicked() {
-
-    }
 
     protected boolean validateCurrentStep() {
         // Perform validation logic here and return true if everything is correct

@@ -35,11 +35,17 @@ public abstract class PostStepBaseFragment extends Fragment {
         }
     }
 
-    protected abstract void onPreviousClicked();
+    protected void onPreviousClicked() {
+        if (getParentFragment() instanceof PostFragment) {
+            ((PostFragment) getParentFragment()).goToPreviousStep();
+        }
+    }
+
+    protected void onCancelClicked() {
+        ((MainActivity) getActivity()).showHomeFragment();
+    }
 
     protected abstract void onNextClicked();
-
-    protected abstract void onCancelClicked();
 
     protected abstract boolean validateCurrentStep();
 }
