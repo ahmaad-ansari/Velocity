@@ -2,6 +2,7 @@ package com.example.carmarketplaceapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
@@ -9,10 +10,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SharedViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -29,13 +35,16 @@ public class MainActivity extends AppCompatActivity {
                 Fragment selectedFragment = null;
 
                 if (item.getItemId() == R.id.nav_home) {
+                    viewModel.clearImageUris();
                     selectedFragment = new HomeFragment();
-                } else if (item.getItemId() == R.id.nav_profile) {
-                    selectedFragment = new ProfileFragment();
                 } else if (item.getItemId() == R.id.nav_post) {
                     selectedFragment = new PostFragment();
                 } else if (item.getItemId() == R.id.nav_search) {
+                    viewModel.clearImageUris();
                     selectedFragment = new SearchFragment();
+                } else if (item.getItemId() == R.id.nav_profile) {
+                    viewModel.clearImageUris();
+                    selectedFragment = new ProfileFragment();
                 } else {
                     // Handle other menu items
                 }
@@ -49,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             };
 
     public void showHomeFragment() {
+        viewModel.clearImageUris();
         HomeFragment homeFragment = new HomeFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, homeFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed

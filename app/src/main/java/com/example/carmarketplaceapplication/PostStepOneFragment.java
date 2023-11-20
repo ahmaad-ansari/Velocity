@@ -53,7 +53,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     private static final int CAPTURE_IMAGE_REQUEST = 2;
     private static final int REQUEST_CAMERA_PERMISSION = 100;
 
-    private static final int MAX_IMAGES = 8;
+    private static final int MAX_IMAGES = 10;
     private String currentPhotoPath;
 
     private ImageAdapter imageAdapter;
@@ -80,8 +80,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-
-        initializeImageSection(view);
         viewModel.getImageUris().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
             @Override
             public void onChanged(List<Uri> uris) {
@@ -96,6 +94,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
         Button btnPrevious = view.findViewById(R.id.button_previous);
         btnPrevious.setVisibility(View.GONE);
+
+        initializeImageSection(view);
 
         return view;
     }

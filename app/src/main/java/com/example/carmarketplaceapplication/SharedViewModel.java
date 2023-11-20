@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SharedViewModel extends ViewModel {
@@ -27,6 +28,14 @@ public class SharedViewModel extends ViewModel {
 
     public void setImageUris(List<Uri> uris) {
         imageUris.setValue(uris);
+    }
+
+    public void clearImageUris() {
+        List<Uri> emptyUriList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            emptyUriList.add(Uri.EMPTY);
+        }
+        imageUris.postValue(emptyUriList); // Use postValue to update the LiveData
     }
 }
 
