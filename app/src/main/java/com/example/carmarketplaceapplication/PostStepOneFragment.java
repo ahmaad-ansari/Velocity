@@ -78,22 +78,21 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
-        initializeImageSection(view);
-
-
 
         viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
+        initializeImageSection(view);
         viewModel.getImageUris().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
             @Override
             public void onChanged(List<Uri> uris) {
-                if (uris != null) {
+                if (!uris.equals(imageUris)) {
                     imageUris.clear();
                     imageUris.addAll(uris);
                     imageAdapter.notifyDataSetChanged();
                 }
             }
         });
+
 
         Button btnPrevious = view.findViewById(R.id.button_previous);
         btnPrevious.setVisibility(View.GONE);
