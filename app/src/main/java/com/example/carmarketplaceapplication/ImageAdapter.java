@@ -26,11 +26,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private Context context;
     private ArrayList<Uri> imageUris;
     private LayoutInflater inflater;
+    private SharedViewModel viewModel; // Add ViewModel reference
 
-    public ImageAdapter(Context context, ArrayList<Uri> imageUris) {
+
+    public ImageAdapter(Context context, ArrayList<Uri> imageUris, SharedViewModel viewModel) {
         this.context = context;
         this.imageUris = imageUris;
         this.inflater = LayoutInflater.from(context);
+        this.viewModel = viewModel; // Initialize ViewModel
     }
 
     @NonNull
@@ -83,10 +86,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .setPositiveButton("Yes", (dialog, which) -> {
                     imageUris.remove(position);
                     notifyDataSetChanged();
+                    if (viewModel != null) {
+                        viewModel.setImageUris(new ArrayList<>(imageUris)); // Update ViewModel
+                    }
                 })
                 .setNegativeButton("No", null)
                 .show();
     }
+
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;

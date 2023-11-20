@@ -2,6 +2,7 @@ package com.example.carmarketplaceapplication;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +32,8 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     private String[] carColors, numberOfDoors, numberOfSeats;
     private View view;
     private GoogleMap mMap;
+    private SharedViewModel viewModel;
+
 
 
     public PostStepTwoFragment() {
@@ -45,6 +50,8 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_two, container, false);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         Button btnNext = view.findViewById(R.id.button_next);
         btnNext.setText("View");
@@ -97,19 +104,31 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
 
     @Override
     protected void onNextClicked() {
-        if (!validateCurrentStep()) {
-            // Navigate to the next step fragment
+        if (validateCurrentStep()) {
+            // If all validations pass, navigate to the next step fragment
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
                 parentFragment.goToNextStep(new PostStepThreeFragment());
             }
         } else {
             // Show error or validation feedback
+            // For example, you can show a Toast, Snackbar, or log a message
+            Toast.makeText(getContext(), "Please check the input fields.", Toast.LENGTH_SHORT).show();
         }
     }
 
 
+
     protected boolean validateCurrentStep() {
+
+        // Retrieve the current car model from ViewModel or create a new one
+        CarListModel carModel = viewModel.getCarListModel().getValue();
+        if (carModel == null) {
+            carModel = new CarListModel();
+        }
+        Log.d("DEBUG","Current Car Model: " + carModel);
+
+
         // Perform validation logic here and return true if everything is correct
 
         if (autocompleteCarColor.getText().toString().isEmpty()) {
@@ -168,6 +187,19 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
             return false;
         }
 
+        // Update the car model with data from this step
+        carModel.setColor(autocompleteCarColor.getText().toString().trim());
+        carModel.setOdometer(odometer);
+        carModel.setPrice(price);
+        carModel.setDescription(editTextDescription.getText().toString().trim());
+        carModel.setNumberOfDoors(Integer.parseInt(autocompleteNumberOfDoors.getText().toString().trim()));
+        carModel.setNumberOfSeats(Integer.parseInt(autocompleteNumberOfSeats.getText().toString().trim()));
+        carModel.setAirConditioning(checkBoxAC.isChecked());
+        carModel.setNavigationSystem(checkBoxNav.isChecked());
+        carModel.setBluetoothConnectivity(checkBoxBT.isChecked());
+
+        // Update the ViewModel
+        viewModel.setCarListModel(carModel);
         // If all validations pass
         return true;
     }

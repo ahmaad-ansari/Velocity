@@ -10,14 +10,14 @@ import java.util.List;
 
 public class RegularCarsAdapter extends RecyclerView.Adapter<RegularCarsAdapter.ViewHolder> {
 
-    private final List<CarListingModel> carListings;
+    private final List<CarListModel> carListings;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(CarListingModel item);
+        void onItemClick(CarListModel item);
     }
 
-    public RegularCarsAdapter(List<CarListingModel> carListings, OnItemClickListener listener) {
+    public RegularCarsAdapter(List<CarListModel> carListings, OnItemClickListener listener) {
         this.carListings = carListings;
         this.listener = listener;
     }
@@ -31,7 +31,7 @@ public class RegularCarsAdapter extends RecyclerView.Adapter<RegularCarsAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        CarListingModel item = carListings.get(position);
+        CarListModel item = carListings.get(position);
         holder.bind(item, listener);
     }
 
@@ -52,7 +52,7 @@ public class RegularCarsAdapter extends RecyclerView.Adapter<RegularCarsAdapter.
             priceTextView = itemView.findViewById(R.id.regularCarPrice);
         }
 
-        void bind(final CarListingModel item, final OnItemClickListener listener) {
+        void bind(final CarListModel item, final OnItemClickListener listener) {
             modelTextView.setText(item.getMake() + " " + item.getModel());
             odometerTextView.setText(String.format("%,.0f km", item.getOdometer()));
             priceTextView.setText(String.format("$%,.2f", item.getPrice()));

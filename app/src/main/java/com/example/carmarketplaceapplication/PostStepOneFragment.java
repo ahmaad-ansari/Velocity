@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PostStepOneFragment extends PostStepBaseFragment  {
@@ -55,6 +59,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     private ImageAdapter imageAdapter;
     private ArrayList<Uri> imageUris;
     RecyclerView recyclerViewMedia;
+    private SharedViewModel viewModel;
+
 
 
 
@@ -73,6 +79,21 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
         initializeImageSection(view);
+
+
+
+        viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        viewModel.getImageUris().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
+            @Override
+            public void onChanged(List<Uri> uris) {
+                if (uris != null) {
+                    imageUris.clear();
+                    imageUris.addAll(uris);
+                    imageAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         Button btnPrevious = view.findViewById(R.id.button_previous);
         btnPrevious.setVisibility(View.GONE);
@@ -107,7 +128,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     private void initializeImageSection(View view) {
         recyclerViewMedia = view.findViewById(R.id.recyclerView_media);
         imageUris = new ArrayList<>();
-        imageAdapter = new ImageAdapter(getContext(), imageUris);
+        imageAdapter = new ImageAdapter(getContext(), imageUris, viewModel); // Make sure viewModel is initialized
 
         recyclerViewMedia.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewMedia.setAdapter(imageAdapter);
@@ -115,8 +136,9 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         Button btnAddImage = view.findViewById(R.id.btnAddImage);
         btnAddImage.setOnClickListener(v -> showImagePickOptions());
 
-        initializeRecyclerViewWithPlaceholders();
+        initializeRecyclerViewWithPlaceholders(); // Now this can be called safely
     }
+
 
     private void showImagePickOptions() {
         CharSequence[] options = {"Gallery", "Camera"};
@@ -136,8 +158,11 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         for (int i = 0; i < MAX_IMAGES; i++) {
             imageUris.add(Uri.EMPTY); // Uri.EMPTY is used as a placeholder
         }
-        imageAdapter.notifyDataSetChanged();
+        if (imageAdapter != null) {
+            imageAdapter.notifyDataSetChanged();
+        }
     }
+
 
     private void openGallery() {
         Intent intent = new Intent();
@@ -232,8 +257,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             }
         }
         imageAdapter.notifyDataSetChanged();
+        viewModel.setImageUris(new ArrayList<>(imageUris));
     }
-
 
     private void setDropdownAdapter(AutoCompleteTextView autoCompleteTextView, String[] data) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
@@ -246,71 +271,92 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         }
     }
 
-
     @Override
     protected void onNextClicked() {
-        if (!validateCurrentStep()) {
-            // Navigate to the next step fragment
+        if (validateCurrentStep()) {
+            // If all validations pass, navigate to the next step fragment
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
                 parentFragment.goToNextStep(new PostStepTwoFragment());
             }
         } else {
             // Show error or validation feedback
+            // For example, you can show a Toast, Snackbar, or log a message
+            Toast.makeText(getContext(), "Please check the input fields.", Toast.LENGTH_SHORT).show();
         }
     }
 
-
     protected boolean validateCurrentStep() {
-        // Perform validation logic here and return true if everything is correct
+        CarListModel carModel = viewModel.getCarListModel().getValue();
+        if (carModel == null) {
+            carModel = new CarListModel();
+        }
+        Log.d("DEBUG","Current Car Model: " + carModel);
 
-        if (autocompleteCarMake.getText().toString().isEmpty()) {
+
+        String make = autocompleteCarMake.getText().toString().trim();
+        String model = autocompleteCarModel.getText().toString().trim();
+        String yearString = editTextCarYear.getText().toString().trim();
+        String transmissionType = autocompleteTransmissionType.getText().toString().trim();
+        String drivetrainType = autocompleteDrivetrainType.getText().toString().trim();
+        String fuelType = autocompleteFuelType.getText().toString().trim();
+
+        // Perform validations for each field
+        if (make.isEmpty()) {
             autocompleteCarMake.requestFocus();
             return false;
         }
 
-        if (autocompleteCarModel.getText().toString().isEmpty()) {
+        if (model.isEmpty()) {
             autocompleteCarModel.requestFocus();
             return false;
         }
 
-        String yearString = editTextCarYear.getText().toString().trim();
-        if (TextUtils.isEmpty(yearString) || !yearString.matches("\\d{4}")) {
-            editTextCarYear.requestFocus();
-            return false;
-        }
-
         int year;
-        try {
-            year = Integer.parseInt(yearString);
-        } catch (NumberFormatException e) {
+        if (yearString.isEmpty() || !yearString.matches("\\d{4}")) {
             editTextCarYear.requestFocus();
             return false;
+        } else {
+            try {
+                year = Integer.parseInt(yearString);
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                if (year < 1900 || year > currentYear) {
+                    editTextCarYear.requestFocus();
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                editTextCarYear.requestFocus();
+                return false;
+            }
         }
 
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        if (year < 1900 || year > currentYear) {
-            editTextCarYear.requestFocus();
-            return false;
-        }
-
-        if (autocompleteTransmissionType.getText().toString().isEmpty()) {
+        if (transmissionType.isEmpty()) {
             autocompleteTransmissionType.requestFocus();
             return false;
         }
 
-        if (autocompleteDrivetrainType.getText().toString().isEmpty()) {
+        if (drivetrainType.isEmpty()) {
             autocompleteDrivetrainType.requestFocus();
             return false;
         }
 
-        if (autocompleteFuelType.getText().toString().isEmpty()) {
+        if (fuelType.isEmpty()) {
             autocompleteFuelType.requestFocus();
             return false;
         }
 
+        // If all validations pass, set values to carModel
+        carModel.setMake(make);
+        carModel.setModel(model);
+        carModel.setYear(year);
+        carModel.setTransmissionType(transmissionType);
+        carModel.setDrivetrainType(drivetrainType);
+        carModel.setFuelType(fuelType);
+        carModel.setImageUris(new ArrayList<>(imageUris));
+
+        viewModel.setCarListModel(carModel);
+
         // If all validations pass
         return true;
     }
-
 }

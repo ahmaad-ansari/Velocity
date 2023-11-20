@@ -73,6 +73,7 @@ public class PostStepThreeFragment extends PostStepBaseFragment implements OnMap
             // Navigate to the next step fragment
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
+                // Logic to post listing
 //                parentFragment.goToNextStep(new PostStepThreeFragment());
             }
         } else {

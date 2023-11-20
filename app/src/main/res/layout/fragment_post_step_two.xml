@@ -22,9 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:editable="false"
-                android:dropDownHeight="wrap_content"
-                android:dropDownWidth="match_parent"/>
+                android:editable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -104,9 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:editable="false"
-                android:dropDownHeight="wrap_content"
-                android:dropDownWidth="match_parent"/>
+                android:editable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Number of Seats Input -->
@@ -123,9 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:editable="false"
-                android:dropDownHeight="wrap_content"
-                android:dropDownWidth="match_parent"/>
+                android:editable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -156,14 +150,11 @@
 
 
         <fragment
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_marginTop="8dp"/>
-
-
 
         <!-- Include navigation buttons -->
         <include layout="@layout/navigation_buttons"
