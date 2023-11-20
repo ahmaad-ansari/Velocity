@@ -7,23 +7,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
-import java.util.Calendar;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class PostStepTwoFragment extends PostStepBaseFragment  {
+public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapReadyCallback  {
 
     private AutoCompleteTextView autocompleteCarColor, autocompleteNumberOfDoors, autocompleteNumberOfSeats;
     private EditText editTextOdometer, editTextPrice,editTextDescription;
-    private CheckBox checkBoxAC, checkBoxNav, checkBoxBT, checkBoxSunroof;
+    private CheckBox checkBoxAC, checkBoxNav, checkBoxBT;
     private String[] carColors, numberOfDoors, numberOfSeats;
     private View view;
+    private GoogleMap mMap;
+
 
     public PostStepTwoFragment() {
         // Required empty public constructor
@@ -39,6 +44,13 @@ public class PostStepTwoFragment extends PostStepBaseFragment  {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_two, container, false);
+
+        // Get a handle to the fragment and register the callback.
+        // Use getChildFragmentManager() or getFragmentManager() based on your fragment setup
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         return view;
     }
@@ -56,7 +68,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment  {
         checkBoxAC = view.findViewById(R.id.checkbox_air_conditioning);
         checkBoxNav = view.findViewById(R.id.checkbox_navigation_system);
         checkBoxBT = view.findViewById(R.id.checkbox_bluetooth_connectivity);
-        checkBoxSunroof = view.findViewById(R.id.checkbox_sunroof);
 
         carColors = getResources().getStringArray(R.array.car_colors);
         numberOfDoors = getResources().getStringArray(R.array.car_doors);
@@ -166,5 +177,13 @@ public class PostStepTwoFragment extends PostStepBaseFragment  {
 
         // If all validations pass
         return true;
+    }
+
+    // Get a handle to the GoogleMap object and display marker.
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.moveCamera(CameraUpdateFactory.
+                newLatLngZoom(new LatLng(43.874320, -79.007450), 10));
+
     }
 }

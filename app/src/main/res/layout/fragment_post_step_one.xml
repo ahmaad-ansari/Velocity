@@ -1,6 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,9 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:editable="false"
-                android:dropDownHeight="wrap_content"
-                android:dropDownWidth="match_parent"/>
+                android:editable="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 

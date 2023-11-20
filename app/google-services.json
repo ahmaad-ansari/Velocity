@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "979662235062",
-    "project_id": "velocity-34a76",
-    "storage_bucket": "velocity-34a76.appspot.com"
+    "project_number": "312083272196",
+    "project_id": "steam-patrol-405700",
+    "storage_bucket": "steam-patrol-405700.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:979662235062:android:684782ab197bc55cb8cd17",
+        "mobilesdk_app_id": "1:312083272196:android:0dcb28a9325c5d621e1b51",
         "android_client_info": {
           "package_name": "com.example.carmarketplaceapplication"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDarJpda-9UybmdV338MlVTXai0X9ANQao"
+          "current_key": "AIzaSyCwUk-GTWTjyIJscl24oo3EdS3_7ox7tF4"
         }
       ],
       "services": {

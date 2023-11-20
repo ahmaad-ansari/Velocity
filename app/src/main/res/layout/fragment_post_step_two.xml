@@ -154,13 +154,16 @@
             android:layout_height="wrap_content"
             android:text="@string/bluetooth_connectivity"/>
 
-        <!-- Sunroof Checkbox -->
-        <CheckBox
-            android:id="@+id/checkbox_sunroof"
-            style="@style/Widget.Material3.CompoundButton.CheckBox"
+
+        <fragment
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sunroof"/>
+            android:layout_height="250dp"
+            android:layout_marginTop="8dp"/>
+
+
 
         <!-- Include navigation buttons -->
         <include layout="@layout/navigation_buttons"

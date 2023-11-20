@@ -28,6 +28,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -228,14 +230,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         }
         imageAdapter.notifyDataSetChanged();
     }
-
-
-
-
-
-
-
-
 
 
     private void setDropdownAdapter(AutoCompleteTextView autoCompleteTextView, String[] data) {

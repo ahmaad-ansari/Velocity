@@ -39,14 +39,12 @@ public class SignUpActivity extends AppCompatActivity {
         mLastNameLayout = findViewById(R.id.layout_last_name);
         mEmailLayout = findViewById(R.id.layout_email);
         mPhoneLayout = findViewById(R.id.layout_phone_number);
-        mAddressLayout = findViewById(R.id.layout_address);
         mPasswordLayout = findViewById(R.id.layout_password);
 
         // Initialize all EditText fields
         mFirstNameField = findViewById(R.id.editText_first_name);
         mLastNameField = findViewById(R.id.editText_last_name);
         mEmailField = findViewById(R.id.editText_email);
-        mAddressField = findViewById(R.id.autoCompleteTextViewAddress);
         mPhoneField = findViewById(R.id.editText_phone_number);
         mPasswordField = findViewById(R.id.editText_password);
 
@@ -55,8 +53,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         mSignUpButton.setOnClickListener(view -> attemptSignUp());
         mLoginTextView.setOnClickListener(view -> navigateToLogin());
-
-        new AddressAutocompleteHelper(this, mAddressField);
     }
 
     private void attemptSignUp() {
@@ -65,7 +61,6 @@ public class SignUpActivity extends AppCompatActivity {
                 mLastNameField.getText().toString().trim(),
                 mEmailField.getText().toString().trim(),
                 mPasswordField.getText().toString().trim(),
-                mAddressField.getText().toString().trim(),
                 mPhoneField.getText().toString().trim()
         );
 
@@ -85,10 +80,9 @@ public class SignUpActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Save additional fields in Firestore
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        UserProfile userProfile = new UserProfile(
+                        UserProfileModel userProfile = new UserProfileModel(
                                 mFirstNameField.getText().toString().trim(),
                                 mLastNameField.getText().toString().trim(),
-                                mAddressField.getText().toString().trim(),
                                 firebaseUser.getEmail(),
                                 mPhoneField.getText().toString().trim(), // Assuming you are collecting the phone number here
                                 "", // ProfileImageUrl can be set after uploading an image
@@ -102,6 +96,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     // Handle the error, e.g., show a toast
                                     Toast.makeText(SignUpActivity.this, "Error saving user profile: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                                 });
+
                     } else {
                         // If sign-up fails, display a message to the user.
                         Toast.makeText(SignUpActivity.this, "Authentication failed: " + task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
@@ -109,33 +104,26 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private boolean validateForm(String firstName, String lastName, String email, String password, String address, String phone) {
+    private boolean validateForm(String firstName, String lastName, String email, String password, String phone) {
         boolean valid = true;
 
         // Validate the new fields
         if (TextUtils.isEmpty(firstName)) {
-            mFirstNameLayout.setError("Required.");
+            mFirstNameLayout.setError("Please enter a first name.");
             valid = false;
         } else {
             mFirstNameLayout.setError(null);
         }
 
         if (TextUtils.isEmpty(lastName)) {
-            mLastNameLayout.setError("Required.");
+            mLastNameLayout.setError("Please enter a last name.");
             valid = false;
         } else {
             mLastNameLayout.setError(null);
         }
 
-        if (TextUtils.isEmpty(address)) {
-            mAddressLayout.setError("Required.");
-            valid = false;
-        } else {
-            mAddressLayout.setError(null);
-        }
-
         if (TextUtils.isEmpty(phone)) {
-            mPhoneLayout.setError("Required.");
+            mPhoneLayout.setError("Please enter a phone number.");
             valid = false;
         } else if (!Patterns.PHONE.matcher(phone).matches()) {
             mPhoneLayout.setError("Please enter a valid phone number.");
@@ -146,7 +134,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Existing validation
         if (TextUtils.isEmpty(email)) {
-            mEmailLayout.setError("Required.");
+            mEmailLayout.setError("Please enter an email address.");
             valid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             mEmailLayout.setError("Please enter a valid email address.");
@@ -156,7 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(password)) {
-            mPasswordLayout.setError("Required.");
+            mPasswordLayout.setError("Please enter a password.");
             valid = false;
         } else if (password.length() < 6) {
             mPasswordLayout.setError("Password must be at least 6 characters.");

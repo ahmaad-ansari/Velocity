@@ -1,22 +1,20 @@
 package com.example.carmarketplaceapplication;
 
-public class UserProfile {
+public class UserProfileModel {
     private String uid;
     private String firstName;
     private String lastName;
-    private String address;
     private String email;
     private String phoneNumber;
     private String profileImageUrl;
 
     // Default constructor required for calls to DataSnapshot.getValue(UserProfile.class)
-    public UserProfile() {
+    public UserProfileModel() {
     }
 
-    public UserProfile(String firstName, String lastName, String address, String email, String phoneNumber, String profileImageUrl, String uid) {
+    public UserProfileModel(String firstName, String lastName, String email, String phoneNumber, String profileImageUrl, String uid) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.profileImageUrl = profileImageUrl;
@@ -46,14 +44,6 @@ public class UserProfile {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String city) {
-        this.address = address;
     }
 
     public String getEmail() {

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,14 +23,10 @@ import java.util.Map;
 public class ProfileFragment extends Fragment {
 
     private EditText mFirstNameField, mLastNameField, mEmailField, mPhoneNumberField;
-    private AutoCompleteTextView mAddressField;
-
     private Button mEditProfileButton, mSaveProfileButton, mCancelEditsButton, mLogoutButton;
     private ImageView imageViewProfilePicture;
 
-    private UserProfile originalUserData;
-    private AddressAutocompleteHelper addressAutocompleteHelper;
-
+    private UserProfileModel originalUserData;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
     private FirebaseUser currentUser;
@@ -48,7 +43,6 @@ public class ProfileFragment extends Fragment {
         mFirstNameField = view.findViewById(R.id.editTextFirstName);
         mLastNameField = view.findViewById(R.id.editTextLastName);
         mEmailField = view.findViewById(R.id.editTextEmail);
-        mAddressField = view.findViewById(R.id.autoCompleteTextViewAddress);
         mPhoneNumberField = view.findViewById(R.id.editTextPhoneNumber);
 
         imageViewProfilePicture = view.findViewById(R.id.imageViewProfilePicture);
@@ -75,8 +69,6 @@ public class ProfileFragment extends Fragment {
     private void enableEditMode() {
         // Make EditTexts editable
         setEditTextsEditable(true);
-        addressAutocompleteHelper = new AddressAutocompleteHelper(requireContext(), mAddressField);
-
         mSaveProfileButton.setVisibility(View.VISIBLE);
         mCancelEditsButton.setVisibility(View.VISIBLE);
         mEditProfileButton.setVisibility(View.GONE);
@@ -95,7 +87,6 @@ public class ProfileFragment extends Fragment {
         updatedProfile.put("firstName", mFirstNameField.getText().toString().trim());
         updatedProfile.put("lastName", mLastNameField.getText().toString().trim());
         updatedProfile.put("email", mEmailField.getText().toString().trim());
-        updatedProfile.put("address", mAddressField.getText().toString().trim());
         updatedProfile.put("phoneNumber", mPhoneNumberField.getText().toString().trim());
 
         if (!validateForm(updatedProfile)) {
@@ -123,7 +114,6 @@ public class ProfileFragment extends Fragment {
             mFirstNameField.setText(originalUserData.getFirstName());
             mLastNameField.setText(originalUserData.getLastName());
             mEmailField.setText(originalUserData.getEmail());
-            mAddressField.setText(originalUserData.getAddress());
             mPhoneNumberField.setText(originalUserData.getPhoneNumber());
         }
 
@@ -140,7 +130,6 @@ public class ProfileFragment extends Fragment {
         mFirstNameField.setEnabled(editable);
         mLastNameField.setEnabled(editable);
         mEmailField.setEnabled(editable);
-        mAddressField.setEnabled(editable);
         mPhoneNumberField.setEnabled(editable);
     }
 
@@ -177,15 +166,6 @@ public class ProfileFragment extends Fragment {
             mEmailField.setError(null);
         }
 
-        // Validation for City
-        String city = (String) updatedProfile.get("city");
-        if (city.isEmpty()) {
-            mAddressField.setError("Address is required.");
-            valid = false;
-        } else {
-            mAddressField.setError(null);
-        }
-
         // Validation for Phone Number
         String phoneNumber = (String) updatedProfile.get("phoneNumber");
         if (phoneNumber.isEmpty()) {
@@ -211,10 +191,9 @@ public class ProfileFragment extends Fragment {
                                 mFirstNameField.setText(document.getString("firstName"));
                                 mLastNameField.setText(document.getString("lastName"));
                                 mEmailField.setText(document.getString("email"));
-                                mAddressField.setText(document.getString("address"));
                                 mPhoneNumberField.setText(document.getString("phoneNumber"));
 
-                                originalUserData = new UserProfile(document.getString("firstName"), document.getString("lastName"), document.getString("address"), document.getString("email"), document.getString("phoneNumber"), null, null);
+                                originalUserData = new UserProfileModel(document.getString("firstName"), document.getString("lastName"), document.getString("email"), document.getString("phoneNumber"), null, null);
                                 // Set image from URL using your preferred image loading library
                                 // Glide.with(requireContext()).load(document.getString("profileImageUrl")).into(imageViewProfilePicture);
 

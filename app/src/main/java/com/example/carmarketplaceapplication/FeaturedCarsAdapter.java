@@ -10,14 +10,14 @@ import java.util.List;
 
 public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapter.ViewHolder> {
 
-    private final List<CarListing> carListings;
+    private final List<CarListingModel> carListings;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(CarListing item);
+        void onItemClick(CarListingModel item);
     }
 
-    public FeaturedCarsAdapter(List<CarListing> carListings, OnItemClickListener listener) {
+    public FeaturedCarsAdapter(List<CarListingModel> carListings, OnItemClickListener listener) {
         this.carListings = carListings;
         this.listener = listener;
     }
@@ -31,7 +31,7 @@ public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        CarListing item = carListings.get(position);
+        CarListingModel item = carListings.get(position);
         holder.bind(item, listener);
     }
 
@@ -52,7 +52,7 @@ public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapte
             carImageView = itemView.findViewById(R.id.featuredCarImage);
         }
 
-        void bind(final CarListing item, final OnItemClickListener listener) {
+        void bind(final CarListingModel item, final OnItemClickListener listener) {
             modelTextView.setText(item.getMake() + " " + item.getModel());
             priceTextView.setText(String.format("$%,.2f", item.getPrice()));
             // Here, you should use an image loading library like Glide to load the image

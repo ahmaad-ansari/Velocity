@@ -2,7 +2,7 @@ package com.example.carmarketplaceapplication;
 
 import java.util.List;
 
-public class CarListing {
+public class CarListingModel {
 
     private String carId;//=========================
     private String make;//
@@ -26,9 +26,8 @@ public class CarListing {
     private boolean isAirConditioning;//
     private boolean hasNavigationSystem;//
     private boolean hasBluetoothConnectivity;//
-    private boolean hasSunroof;//
 
-    public CarListing(String carId, String make, String model, int year, String color, double odometer, double price, String description, List<String> imageUrls, List<String> videoUrls, String ownerName, String ownerContactNumber, String ownerEmail, String ownerLocation, String transmissionType, String drivetrainType, String fuelType, int numberOfDoors, int numberOfSeats, boolean isAirConditioning, boolean hasNavigationSystem, boolean hasBluetoothConnectivity, boolean hasSunroof) {
+    public CarListingModel(String carId, String make, String model, int year, String color, double odometer, double price, String description, List<String> imageUrls, List<String> videoUrls, String ownerName, String ownerContactNumber, String ownerEmail, String ownerLocation, String transmissionType, String drivetrainType, String fuelType, int numberOfDoors, int numberOfSeats, boolean isAirConditioning, boolean hasNavigationSystem, boolean hasBluetoothConnectivity, boolean hasSunroof) {
         this.carId = carId;
         this.make = make;
         this.model = model;
@@ -51,7 +50,6 @@ public class CarListing {
         this.isAirConditioning = isAirConditioning;
         this.hasNavigationSystem = hasNavigationSystem;
         this.hasBluetoothConnectivity = hasBluetoothConnectivity;
-        this.hasSunroof = hasSunroof;
     }
 
     public String getCarId() {
@@ -142,7 +140,4 @@ public class CarListing {
         return hasBluetoothConnectivity;
     }
 
-    public boolean isHasSunroof() {
-        return hasSunroof;
-    }
 }

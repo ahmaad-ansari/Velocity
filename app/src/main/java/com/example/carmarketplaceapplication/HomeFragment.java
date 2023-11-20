@@ -36,12 +36,12 @@ public class HomeFragment extends Fragment {
 
     private void setupFeaturedCarsRecyclerView() {
         // Create a list of featured car listings
-        List<CarListing> featuredCarListings = getDummyFeaturedCarListings();
+        List<CarListingModel> featuredCarListings = getDummyFeaturedCarListings();
 
         // Create an instance of FeaturedCarsAdapter
         FeaturedCarsAdapter featuredCarsAdapter = new FeaturedCarsAdapter(featuredCarListings, new FeaturedCarsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(CarListing item) {
+            public void onItemClick(CarListingModel item) {
                 // Implement your action on item click
                 // For example, navigate to a detailed car view
             }
@@ -54,12 +54,12 @@ public class HomeFragment extends Fragment {
 
     private void setupRegularCarsRecyclerView() {
         // Create a list of regular car listings
-        List<CarListing> regularCarListings = getDummyRegularCarListings();
+        List<CarListingModel> regularCarListings = getDummyRegularCarListings();
 
         // Create an instance of RegularCarsAdapter
         RegularCarsAdapter regularCarsAdapter = new RegularCarsAdapter(regularCarListings, new RegularCarsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(CarListing item) {
+            public void onItemClick(CarListingModel item) {
                 // Implement your action on item click
                 // For example, navigate to a detailed car view
             }
@@ -71,12 +71,12 @@ public class HomeFragment extends Fragment {
     }
 
     // Dummy methods for fetching car listings data - replace these with your actual data fetching logic
-    private List<CarListing> getDummyFeaturedCarListings() {
-        List<CarListing> featuredListings = new ArrayList<>();
+    private List<CarListingModel> getDummyFeaturedCarListings() {
+        List<CarListingModel> featuredListings = new ArrayList<>();
 
         // Add dummy data for featured listings
         for (int i = 0; i < 10; i++) {
-            featuredListings.add(new CarListing(
+            featuredListings.add(new CarListingModel(
                     "1", "Ferrari", "488 Spider", 2020, "Red", 10000, 250000,
                     "A stunning sports convertible in excellent condition.",
                     Arrays.asList("url_to_image_1", "url_to_image_2"), // Replace with actual image URLs
@@ -88,12 +88,12 @@ public class HomeFragment extends Fragment {
         return featuredListings;
     }
 
-    private List<CarListing> getDummyRegularCarListings() {
-        List<CarListing> regularListings = new ArrayList<>();
+    private List<CarListingModel> getDummyRegularCarListings() {
+        List<CarListingModel> regularListings = new ArrayList<>();
 
         // Add dummy data for regular listings
         for (int i = 0; i < 10; i++) {
-            regularListings.add(new CarListing(
+            regularListings.add(new CarListingModel(
                     "2", "Toyota", "RAV4", 2019, "Blue", 30000, 20000,
                     "Reliable family SUV with great fuel efficiency.",
                     Arrays.asList("url_to_image_3", "url_to_image_4"), // Replace with actual image URLs

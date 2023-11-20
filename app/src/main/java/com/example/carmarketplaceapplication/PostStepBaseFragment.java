@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.GoogleMap;
+
 public abstract class PostStepBaseFragment extends Fragment {
 
     @Override

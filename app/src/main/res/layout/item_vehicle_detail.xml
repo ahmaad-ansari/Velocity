@@ -1,0 +1,44 @@
+<!-- item_vehicle_detail.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:paddingTop="16dp"
+    android:gravity="center_vertical">
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/imageViewIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_placeholder"
+        app:tint="@color/primaryColor"/>
+
+    <!-- Space between icon and heading -->
+    <View
+        android:layout_width="8dp"
+        android:layout_height="match_parent" />
+
+    <!-- Heading -->
+    <TextView
+        android:id="@+id/textViewHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heading"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <!-- Space between heading and detail -->
+    <View
+        android:layout_width="8dp"
+        android:layout_height="match_parent" />
+
+    <!-- Detail -->
+    <TextView
+        android:id="@+id/textViewDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detail" />
+
+</LinearLayout>
