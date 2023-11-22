@@ -2,9 +2,10 @@ package com.example.carmarketplaceapplication;
 
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CarListModel {
+public class CarListModel implements Serializable {
 
     private String carId;//=========================
     private String make;//
@@ -15,6 +16,7 @@ public class CarListModel {
     private double price;//
     private String description;//
     private List<Uri> imageUris;//=========================
+    private List<String> imageUrls;
     private List<Uri> videoUris;//=========================
     private String ownerName;//=========================
     private String ownerContactNumber;//=========================
@@ -23,8 +25,8 @@ public class CarListModel {
     private String transmissionType;//
     private String drivetrainType;//
     private String fuelType;//
-    private int numberOfDoors;//
-    private int numberOfSeats;//
+    private String numberOfDoors;//
+    private String numberOfSeats;//
     private boolean airConditioning;//
     private boolean navigationSystem;//
     private boolean bluetoothConnectivity;//
@@ -47,13 +49,13 @@ public class CarListModel {
         this.transmissionType = null;
         this.drivetrainType = null;
         this.fuelType = null;
-        this.numberOfDoors = 0;
-        this.numberOfSeats = 0;
+        this.numberOfDoors = null;
+        this.numberOfSeats = null;
         this.airConditioning = false;
         this.navigationSystem = false;
         this.bluetoothConnectivity = false;
     }
-    public CarListModel(String carId, String make, String model, int year, String color, double odometer, double price, String description, List<Uri> imageUris, List<Uri> videoUris, String ownerName, String ownerContactNumber, String ownerEmail, String ownerLocation, String transmissionType, String drivetrainType, String fuelType, int numberOfDoors, int numberOfSeats, boolean airConditioning, boolean navigationSystem, boolean bluetoothConnectivity, boolean hasSunroof) {
+    public CarListModel(String carId, String make, String model, int year, String color, double odometer, double price, String description, List<Uri> imageUris, List<Uri> videoUris, String ownerName, String ownerContactNumber, String ownerEmail, String ownerLocation, String transmissionType, String drivetrainType, String fuelType, String numberOfDoors, String numberOfSeats, boolean airConditioning, boolean navigationSystem, boolean bluetoothConnectivity, boolean hasSunroof) {
         this.carId = carId;
         this.make = make;
         this.model = model;
@@ -146,11 +148,11 @@ public class CarListModel {
         this.fuelType = fuelType;
     }
 
-    public void setNumberOfDoors(int numberOfDoors) {
+    public void setNumberOfDoors(String numberOfDoors) {
         this.numberOfDoors = numberOfDoors;
     }
 
-    public void setNumberOfSeats(int numberOfSeats) {
+    public void setNumberOfSeats(String numberOfSeats) {
         this.numberOfSeats = numberOfSeats;
     }
 
@@ -164,6 +166,14 @@ public class CarListModel {
 
     public void setBluetoothConnectivity(boolean bluetoothConnectivity) {
         this.bluetoothConnectivity = bluetoothConnectivity;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public String getCarId() {
@@ -234,11 +244,11 @@ public class CarListModel {
         return fuelType;
     }
 
-    public int getNumberOfDoors() {
+    public String getNumberOfDoors() {
         return numberOfDoors;
     }
 
-    public int getNumberOfSeats() {
+    public String getNumberOfSeats() {
         return numberOfSeats;
     }
 
@@ -266,6 +276,7 @@ public class CarListModel {
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", imageUris=" + imageUris +
+                ", imageUrls=" + imageUrls +
                 ", videoUris=" + videoUris +
                 ", ownerName='" + ownerName + '\'' +
                 ", ownerContactNumber='" + ownerContactNumber + '\'' +

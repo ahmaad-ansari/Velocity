@@ -6,20 +6,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapter.ViewHolder> {
 
-    private final List<CarListModel> carListings;
+    private List<CarListModel> carListings;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(CarListModel item);
     }
 
-    public FeaturedCarsAdapter(List<CarListModel> carListings, OnItemClickListener listener) {
-        this.carListings = carListings;
+    public FeaturedCarsAdapter(OnItemClickListener listener) {
+        this.carListings = new ArrayList<>();
         this.listener = listener;
+    }
+
+    public void setCarListings(List<CarListModel> newCarListings) {
+        this.carListings = newCarListings;
+        notifyDataSetChanged(); // Notify the adapter that the data set has changed
     }
 
     @Override
@@ -41,8 +47,7 @@ public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapte
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView modelTextView;
-        private final TextView priceTextView;
+        private final TextView modelTextView, priceTextView;
         private final ImageView carImageView;
 
         ViewHolder(View itemView) {
@@ -55,8 +60,8 @@ public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapte
         void bind(final CarListModel item, final OnItemClickListener listener) {
             modelTextView.setText(item.getMake() + " " + item.getModel());
             priceTextView.setText(String.format("$%,.2f", item.getPrice()));
-            // Here, you should use an image loading library like Glide to load the image
-            // Glide.with(itemView.getContext()).load(item.getImageUrl()).into(carImageView);
+            // Implement image loading logic here
+            // Example: Glide.with(itemView.getContext()).load(item.getImageUrl()).into(carImageView);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {

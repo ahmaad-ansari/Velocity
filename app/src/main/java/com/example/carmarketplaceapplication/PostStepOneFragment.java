@@ -25,13 +25,15 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.GoogleMap;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,14 +54,14 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAPTURE_IMAGE_REQUEST = 2;
     private static final int REQUEST_CAMERA_PERMISSION = 100;
-
     private static final int MAX_IMAGES = 10;
-    private String currentPhotoPath;
 
+    private String currentPhotoPath;
     private ImageAdapter imageAdapter;
     private ArrayList<Uri> imageUris;
     RecyclerView recyclerViewMedia;
     private SharedViewModel viewModel;
+    private CarListModel carModel;
 
 
 
@@ -99,7 +101,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
         return view;
     }
-
     private void initializeViews(View view) {
         // Initialize AutoCompleteTextViews
         autocompleteCarMake = view.findViewById(R.id.autocomplete_car_make);
@@ -110,7 +111,9 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         autocompleteFuelType = view.findViewById(R.id.autocomplete_fuel_type);
 
         carMakes = getResources().getStringArray(R.array.car_makes);
-        carModels = getResources().getStringArray(R.array.car_models);
+        // Get car models for the first car make initially
+        carModels = getCarModelsForMake(0); // Assuming Toyota is the first make
+
         transmissionTypes = getResources().getStringArray(R.array.transmission_types);
         drivetrainTypes = getResources().getStringArray(R.array.drivetrain_types);
         fuelTypes = getResources().getStringArray(R.array.fuel_types);
@@ -122,6 +125,47 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         setDropdownAdapter(autocompleteDrivetrainType, drivetrainTypes);
         setDropdownAdapter(autocompleteFuelType, fuelTypes);
 
+        // Listen for changes in the car make selection
+        autocompleteCarMake.setOnItemClickListener((parent, view1, position, id) -> {
+            carModels = getCarModelsForMake(position);
+            setDropdownAdapter(autocompleteCarModel, carModels);
+        });
+    }
+
+    private void setDropdownAdapter(AutoCompleteTextView autoCompleteTextView, String[] data) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, data);
+        autoCompleteTextView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        if (!TextUtils.isEmpty(autoCompleteTextView.getText().toString())) {
+            adapter.getFilter().filter(null);
+        }
+    }
+
+    // Function to get car models based on selected make position
+    private String[] getCarModelsForMake(int makePosition) {
+        String[] models;
+        switch (makePosition) {
+            case 0: // Toyota
+                models = getResources().getStringArray(R.array.Toyota_models);
+                break;
+            case 1: // Honda
+                models = getResources().getStringArray(R.array.Honda_models);
+                break;
+            case 2: // BMW
+                models = getResources().getStringArray(R.array.BMW_models);
+                break;
+            case 3: // Lexus
+                models = getResources().getStringArray(R.array.Lexus_models);
+                break;
+            case 4: // Nissan
+                models = getResources().getStringArray(R.array.Nissan_models);
+                break;
+            default:
+                models = new String[0]; // Empty array if no match
+        }
+        return models;
     }
 
     private void initializeImageSection(View view) {
@@ -259,17 +303,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         viewModel.setImageUris(new ArrayList<>(imageUris));
     }
 
-    private void setDropdownAdapter(AutoCompleteTextView autoCompleteTextView, String[] data) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, data);
-        autoCompleteTextView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        if (!TextUtils.isEmpty(autoCompleteTextView.getText().toString())) {
-            adapter.getFilter().filter(null);
-        }
-    }
-
     @Override
     protected void onNextClicked() {
         if (validateCurrentStep()) {
@@ -286,7 +319,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     }
 
     protected boolean validateCurrentStep() {
-        CarListModel carModel = viewModel.getCarListModel().getValue();
+        carModel = viewModel.getCarListModel().getValue();
         if (carModel == null) {
             carModel = new CarListModel();
         }
@@ -344,6 +377,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             return false;
         }
 
+        setOwnerDetailsToListing(carModel);
+
         // If all validations pass, set values to carModel
         carModel.setMake(make);
         carModel.setModel(model);
@@ -358,4 +393,41 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         // If all validations pass
         return true;
     }
+
+    private void setOwnerDetailsToListing(CarListModel carModel) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userId = currentUser.getUid();
+
+            DocumentReference userRef = db.collection("users").document(userId);
+            userRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String firstName = documentSnapshot.getString("firstName");
+                    String lastName = documentSnapshot.getString("lastName");
+                    String email = documentSnapshot.getString("email");
+                    String userPhoneNumber = documentSnapshot.getString("phoneNumber");
+
+                    String formattedPhoneNumber = String.format("(%s) %s-%s",
+                            userPhoneNumber.substring(0, 3),
+                            userPhoneNumber.substring(3, 6),
+                            userPhoneNumber.substring(6));
+
+
+                    carModel.setOwnerName(firstName + " " + lastName);
+                    carModel.setOwnerEmail(email);
+                    carModel.setOwnerContactNumber(formattedPhoneNumber);
+
+                } else {
+                    // Document does not exist
+                    Log.d("TAG", "No such document");
+                }
+            }).addOnFailureListener(e -> {
+                // Task failed with an exception
+                Log.d("TAG", "Error getting user details: ", e);
+            });
+        }
+    }
+
 }

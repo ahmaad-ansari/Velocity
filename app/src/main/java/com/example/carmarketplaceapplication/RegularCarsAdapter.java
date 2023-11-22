@@ -6,20 +6,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegularCarsAdapter extends RecyclerView.Adapter<RegularCarsAdapter.ViewHolder> {
 
-    private final List<CarListModel> carListings;
+    private List<CarListModel> carListings;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(CarListModel item);
     }
 
-    public RegularCarsAdapter(List<CarListModel> carListings, OnItemClickListener listener) {
-        this.carListings = carListings;
+    public RegularCarsAdapter(OnItemClickListener listener) {
+        this.carListings = new ArrayList<>();
         this.listener = listener;
+    }
+
+    public void setCarListings(List<CarListModel> newCarListings) {
+        this.carListings = newCarListings;
+        notifyDataSetChanged(); // Notify the adapter that the data set has changed
     }
 
     @Override

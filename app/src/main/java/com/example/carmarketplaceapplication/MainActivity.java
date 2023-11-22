@@ -64,4 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, homeFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed
                 .commit();
     }
+
+    public void showPostFragment() {
+        viewModel.clearImageUris();
+        PostFragment postFragment = new PostFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, postFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed
+                .commit();
+    }
 }

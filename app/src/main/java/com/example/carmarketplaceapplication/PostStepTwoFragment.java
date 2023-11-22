@@ -192,8 +192,8 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         carModel.setOdometer(odometer);
         carModel.setPrice(price);
         carModel.setDescription(editTextDescription.getText().toString().trim());
-        carModel.setNumberOfDoors(Integer.parseInt(autocompleteNumberOfDoors.getText().toString().trim()));
-        carModel.setNumberOfSeats(Integer.parseInt(autocompleteNumberOfSeats.getText().toString().trim()));
+        carModel.setNumberOfDoors(autocompleteNumberOfDoors.getText().toString().trim());
+        carModel.setNumberOfSeats(autocompleteNumberOfSeats.getText().toString().trim());
         carModel.setAirConditioning(checkBoxAC.isChecked());
         carModel.setNavigationSystem(checkBoxNav.isChecked());
         carModel.setBluetoothConnectivity(checkBoxBT.isChecked());

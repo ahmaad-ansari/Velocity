@@ -42,7 +42,7 @@ public abstract class PostStepBaseFragment extends Fragment {
     }
 
     protected void onCancelClicked() {
-        ((MainActivity) getActivity()).showHomeFragment();
+        ((MainActivity) getActivity()).showPostFragment();
     }
 
     protected abstract void onNextClicked();

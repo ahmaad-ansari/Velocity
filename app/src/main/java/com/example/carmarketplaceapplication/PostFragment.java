@@ -4,11 +4,25 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PostFragment extends Fragment {
+
+    private RecyclerView regularCarsRecyclerView;
+    private RegularCarsAdapter regularCarsAdapter;
+
+
+
 
     public PostFragment() {
         // Required empty public constructor
@@ -20,13 +34,64 @@ public class PostFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_post, container, false);
 
         if (savedInstanceState == null) {
-            displayInitialStepFragment();
+            displayInitialFragment(view);
         }
 
         return view;
     }
 
-    private void displayInitialStepFragment() {
+    private void displayInitialFragment(View view) {
+        // Here, you'll populate the list of posts in the fragment
+        // Create a RecyclerView or ListView and populate it with user's posts
+        regularCarsRecyclerView = view.findViewById(R.id.regularListingsRecyclerView);
+
+        setupRegularCarsRecyclerView();
+//        loadCarListings();
+
+
+        Button btnPost = view.findViewById(R.id.btnPost);
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToFirstStep();
+            }
+        });
+    }
+
+    private void setupRegularCarsRecyclerView() {
+        regularCarsAdapter = new RegularCarsAdapter(new RegularCarsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(CarListModel item) {
+                // Implement your action on item click
+                // For example, navigate to a detailed car view
+            }
+        });
+        regularCarsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        regularCarsRecyclerView.setAdapter(regularCarsAdapter);
+    }
+
+    private void loadCarListings() {
+        FirebaseDataHandler dataHandler = new FirebaseDataHandler();
+        dataHandler.fetchCarListings(new FirebaseDataHandler.FetchDataCallback() {
+            @Override
+            public void onSuccess(List<CarListModel> carList) {
+                // Update your RecyclerViews here
+                regularCarsAdapter.setCarListings(carList); // Same as above
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                // Handle the error
+                Log.e("HomeFragment", "Error fetching car listings", exception);
+            }
+        });
+    }
+
+
+
+
+    private void goToFirstStep() {
+        // Replace the displayed list of posts with the first step fragment
         FragmentManager childFragmentManager = getChildFragmentManager();
         if (childFragmentManager != null) {
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
