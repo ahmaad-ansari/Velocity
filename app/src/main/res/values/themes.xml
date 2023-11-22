@@ -30,6 +30,7 @@
         <!-- Other customizations can be added here -->
     </style>
 
+
     <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
         <item name="itemIconSize">24dp</item>
         <item name="itemTextAppearanceActive">@style/BottomNavigationActiveTextAppearance</item>

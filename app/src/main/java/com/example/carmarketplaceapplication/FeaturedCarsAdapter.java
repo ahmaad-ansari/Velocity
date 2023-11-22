@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +60,22 @@ public class FeaturedCarsAdapter extends RecyclerView.Adapter<FeaturedCarsAdapte
             carImageView = itemView.findViewById(R.id.featuredCarImage);
         }
 
-        void bind(final CarListModel item, final OnItemClickListener listener) {
+        void bind(final CarListModel item, final FeaturedCarsAdapter.OnItemClickListener listener) {
             modelTextView.setText(item.getMake() + " " + item.getModel());
             priceTextView.setText(String.format("$%,.2f", item.getPrice()));
-            // Implement image loading logic here
-            // Example: Glide.with(itemView.getContext()).load(item.getImageUrl()).into(carImageView);
+
+            List<String> imageUrls = item.getImageUrls();
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                // Load the first image URL using Glide
+                Glide.with(itemView.getContext())
+                        .load(imageUrls.get(0)) // Load the first image URL
+                        .placeholder(R.drawable.placeholder_image) // Placeholder image resource
+                        .error(R.drawable.error_image) // Error image resource if Glide fails to load
+                        .into(carImageView);
+            } else {
+                // If there are no image URLs, display a placeholder
+                carImageView.setImageResource(R.drawable.placeholder_image);
+            }
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {

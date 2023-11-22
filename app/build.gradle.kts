@@ -60,6 +60,10 @@ dependencies {
 
     implementation("androidx.recyclerview:recyclerview:1.2.1")
 
+    // Firebase
+    implementation("com.google.firebase:firebase-firestore:24.0.1")
+    implementation("com.google.firebase:firebase-storage:20.0.0")
+
 
     implementation("com.google.android.material:material:1.6.1")
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
@@ -67,6 +71,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:latest_version")
 
     implementation("com.google.android.gms:play-services-maps:17.0.1")
+    implementation("com.googlecode.libphonenumber:libphonenumber:8.12.36")
 
     implementation("com.google.firebase:firebase-firestore:24.1.0")
     implementation("com.google.firebase:firebase-auth:21.0.1")

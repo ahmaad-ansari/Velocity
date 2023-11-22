@@ -2,17 +2,57 @@
 <resources>
     <string-array name="car_makes">
         <item>Toyota</item>
-        <item>Ford</item>
         <item>Honda</item>
-        <!-- Add more items as needed -->
+        <item>BMW</item>
+        <item>Lexus</item>
+        <item>Nissan</item>
     </string-array>
 
-    <string-array name="car_models">
+    <string-array name="Toyota_models">
         <item>Corolla</item>
-        <item>Mustang</item>
-        <item>Civic</item>
-        <!-- Add more items as needed -->
+        <item>Camry</item>
+        <item>Rav4</item>
+        <item>Highlander</item>
+        <item>Prius</item>
+        <!-- Add more Toyota models as needed -->
     </string-array>
+
+    <string-array name="Honda_models">
+        <item>Civic</item>
+        <item>Accord</item>
+        <item>CR-V</item>
+        <item>Pilot</item>
+        <item>Odyssey</item>
+        <!-- Add more Honda models as needed -->
+    </string-array>
+
+    <string-array name="BMW_models">
+        <item>3 Series</item>
+        <item>5 Series</item>
+        <item>7 Series</item>
+        <item>X3</item>
+        <item>X5</item>
+        <!-- Add more BMW models as needed -->
+    </string-array>
+
+    <string-array name="Lexus_models">
+        <item>IS</item>
+        <item>ES</item>
+        <item>GS</item>
+        <item>RX</item>
+        <item>NX</item>
+        <!-- Add more Lexus models as needed -->
+    </string-array>
+
+    <string-array name="Nissan_models">
+        <item>Altima</item>
+        <item>Sentra</item>
+        <item>Maxima</item>
+        <item>Rogue</item>
+        <item>Murano</item>
+        <!-- Add more Nissan models as needed -->
+    </string-array>
+
 
     <string-array name="car_years">
         <item>2021</item>
@@ -70,4 +110,18 @@
         <item>Electric</item>
         <!-- Add more items as needed -->
     </string-array>
+
+    <string-array name="headings_array">
+        <item>Mileage</item>
+        <item>Transmission</item>
+        <item>Drivetrain</item>
+        <item>Fuel Type</item>
+        <item>Color</item>
+        <item>Seats</item>
+        <item>Doors</item>
+        <item>Air Conditioning</item>
+        <item>Navigation System</item>
+        <item>Bluetooth Connectivity</item>
+    </string-array>
+
 </resources>

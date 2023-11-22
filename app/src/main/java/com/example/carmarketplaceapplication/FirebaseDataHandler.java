@@ -142,6 +142,33 @@ public class FirebaseDataHandler {
         void onFailure(Exception exception);
     }
 
+    public void fetchUserCarListings(FetchDataCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser != null) {
+            String userUid = currentUser.getUid();
+
+            db.collection("cars")
+                    .whereEqualTo("uid", userUid) // Filter documents by the user's UID
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<CarListModel> userCarListings = new ArrayList<>();
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            CarListModel car = documentSnapshot.toObject(CarListModel.class);
+                            car.setCarId(documentSnapshot.getId());
+                            userCarListings.add(car);
+                        }
+                        callback.onSuccess(userCarListings);
+                    })
+                    .addOnFailureListener(callback::onFailure);
+        } else {
+            // User is not signed in, handle accordingly
+            callback.onFailure(new Exception("User not signed in"));
+        }
+    }
+
+
     public void fetchCarListings(FetchDataCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("cars")

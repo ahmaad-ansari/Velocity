@@ -46,7 +46,7 @@ public class PostFragment extends Fragment {
         regularCarsRecyclerView = view.findViewById(R.id.regularListingsRecyclerView);
 
         setupRegularCarsRecyclerView();
-//        loadCarListings();
+        loadCarListings();
 
 
         Button btnPost = view.findViewById(R.id.btnPost);
@@ -72,7 +72,7 @@ public class PostFragment extends Fragment {
 
     private void loadCarListings() {
         FirebaseDataHandler dataHandler = new FirebaseDataHandler();
-        dataHandler.fetchCarListings(new FirebaseDataHandler.FetchDataCallback() {
+        dataHandler.fetchUserCarListings(new FirebaseDataHandler.FetchDataCallback() {
             @Override
             public void onSuccess(List<CarListModel> carList) {
                 // Update your RecyclerViews here

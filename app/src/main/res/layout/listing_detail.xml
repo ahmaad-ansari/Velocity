@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -12,18 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Dot Indicators for Image Slider -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabDots"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:tabIndicatorHeight="0dp"
-        app:tabGravity="center"
-        app:tabBackground="@drawable/tab_selector"
-        app:layout_constraintBottom_toBottomOf="@id/imageSlider"
-        app:layout_constraintStart_toStartOf="@id/imageSlider"
-        app:layout_constraintEnd_toEndOf="@id/imageSlider" />
 
     <!-- Car Make and Model -->
     <TextView
@@ -77,8 +66,8 @@
             android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Here goes the actual description of the car. It can be multiple lines long and should give the user a clear understanding of the vehicle's features, condition, history, and any other relevant information."
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:text="Here goes the actual description of the car. It can be multiple lines long and should give the user a clear understanding of the vehicle's features, condition, history, and any other relevant information." />
     </LinearLayout>
 
     <LinearLayout

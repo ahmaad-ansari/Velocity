@@ -1,17 +1,25 @@
 package com.example.carmarketplaceapplication;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -20,6 +28,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView regularCarsRecyclerView;
     private FeaturedCarsAdapter featuredCarsAdapter;
     private RegularCarsAdapter regularCarsAdapter;
+    private List<CarListModel> fullCarList = new ArrayList<>();
+
 
     @Nullable
     @Override
@@ -31,14 +41,43 @@ public class HomeFragment extends Fragment {
         regularCarsRecyclerView = view.findViewById(R.id.regularListingsRecyclerView);
 
         // Setup the RecyclerViews
-        setupFeaturedCarsRecyclerView();
+//        setupFeaturedCarsRecyclerView();
         setupRegularCarsRecyclerView();
 
-        // Load car listings
         loadCarListings();
+
+        EditText searchBar = view.findViewById(R.id.search_bar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filterCarListings(editable.toString());
+            }
+        });
+
 
         return view;
     }
+
+    private void filterCarListings(String query) {
+        // Filter the car listings based on the query
+        List<CarListModel> filteredList = new ArrayList<>();
+        for (CarListModel car : fullCarList) {
+            if (car.getMake().toLowerCase().contains(query.toLowerCase()) || car.getModel().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(car);
+            }
+        }
+
+        // Update your RecyclerViews with the filtered list
+        featuredCarsAdapter.setCarListings(filteredList);
+        regularCarsAdapter.setCarListings(filteredList);
+    }
+
 
     private void setupFeaturedCarsRecyclerView() {
         featuredCarsAdapter = new FeaturedCarsAdapter(new FeaturedCarsAdapter.OnItemClickListener() {
@@ -67,8 +106,9 @@ public class HomeFragment extends Fragment {
         dataHandler.fetchCarListings(new FirebaseDataHandler.FetchDataCallback() {
             @Override
             public void onSuccess(List<CarListModel> carList) {
+                fullCarList = carList;
                 // Update your RecyclerViews here
-                featuredCarsAdapter.setCarListings(carList); // Assuming setCarListings is a method in your adapter
+//                featuredCarsAdapter.setCarListings(carList); // Assuming setCarListings is a method in your adapter
                 regularCarsAdapter.setCarListings(carList); // Same as above
             }
 
