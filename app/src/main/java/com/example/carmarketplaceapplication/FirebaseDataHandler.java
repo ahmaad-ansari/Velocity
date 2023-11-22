@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -167,6 +168,49 @@ public class FirebaseDataHandler {
             callback.onFailure(new Exception("User not signed in"));
         }
     }
+
+    public void fetchFilteredCarListings(FilterBottomSheetFragment.FilterParams filterParams, FetchDataCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query query = db.collection("cars");
+
+        // Add conditions only for non-empty filter parameters
+        if (!filterParams.make.isEmpty()) {
+            query = query.whereEqualTo("make", filterParams.make);
+        }
+        if (!filterParams.model.isEmpty()) {
+            query = query.whereEqualTo("model", filterParams.model);
+        }
+        if (!filterParams.transmission.isEmpty()) {
+            query = query.whereEqualTo("transmissionType", filterParams.transmission);
+        }
+        if (!filterParams.drivetrain.isEmpty()) {
+            query = query.whereEqualTo("drivetrainType", filterParams.drivetrain);
+        }
+        if (!filterParams.fuel.isEmpty()) {
+            query = query.whereEqualTo("fuelType", filterParams.fuel);
+        }
+        if (filterParams.airConditioning) { // Assuming this is a Boolean
+            query = query.whereEqualTo("airConditioning", filterParams.airConditioning);
+        }
+        if (filterParams.navigation) { // Assuming this is a Boolean
+            query = query.whereEqualTo("navigationSystem", filterParams.navigation);
+        }
+        if (filterParams.bluetooth) { // Assuming this is a Boolean
+            query = query.whereEqualTo("bluetoothConnectivity", filterParams.bluetooth);
+        }
+
+        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<CarListModel> filteredList = new ArrayList<>();
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                CarListModel car = documentSnapshot.toObject(CarListModel.class);
+                car.setCarId(documentSnapshot.getId());
+                filteredList.add(car);
+            }
+            callback.onSuccess(filteredList);
+        }).addOnFailureListener(callback::onFailure);
+    }
+
+
 
 
     public void fetchCarListings(FetchDataCallback callback) {

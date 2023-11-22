@@ -148,19 +148,19 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         String[] models;
         switch (makePosition) {
             case 0: // Toyota
-                models = getResources().getStringArray(R.array.Toyota_models);
+                models = getResources().getStringArray(R.array.toyota_models);
                 break;
             case 1: // Honda
-                models = getResources().getStringArray(R.array.Honda_models);
+                models = getResources().getStringArray(R.array.honda_models);
                 break;
             case 2: // BMW
-                models = getResources().getStringArray(R.array.BMW_models);
+                models = getResources().getStringArray(R.array.bmw_models);
                 break;
             case 3: // Lexus
-                models = getResources().getStringArray(R.array.Lexus_models);
+                models = getResources().getStringArray(R.array.lexus_models);
                 break;
             case 4: // Nissan
-                models = getResources().getStringArray(R.array.Nissan_models);
+                models = getResources().getStringArray(R.array.nissan_models);
                 break;
             default:
                 models = new String[0]; // Empty array if no match

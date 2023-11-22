@@ -8,7 +8,7 @@
         <item>Nissan</item>
     </string-array>
 
-    <string-array name="Toyota_models">
+    <string-array name="toyota_models">
         <item>Corolla</item>
         <item>Camry</item>
         <item>Rav4</item>
@@ -17,7 +17,7 @@
         <!-- Add more Toyota models as needed -->
     </string-array>
 
-    <string-array name="Honda_models">
+    <string-array name="honda_models">
         <item>Civic</item>
         <item>Accord</item>
         <item>CR-V</item>
@@ -26,7 +26,7 @@
         <!-- Add more Honda models as needed -->
     </string-array>
 
-    <string-array name="BMW_models">
+    <string-array name="bmw_models">
         <item>3 Series</item>
         <item>5 Series</item>
         <item>7 Series</item>
@@ -35,7 +35,7 @@
         <!-- Add more BMW models as needed -->
     </string-array>
 
-    <string-array name="Lexus_models">
+    <string-array name="lexus_models">
         <item>IS</item>
         <item>ES</item>
         <item>GS</item>
@@ -44,7 +44,7 @@
         <!-- Add more Lexus models as needed -->
     </string-array>
 
-    <string-array name="Nissan_models">
+    <string-array name="nissan_models">
         <item>Altima</item>
         <item>Sentra</item>
         <item>Maxima</item>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bottom_sheet_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filter Options"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Dropdown for Car Make -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_car_make"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/car_make"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_car_make"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Dropdown for Car Model -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_car_model"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/car_model"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_car_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Dropdown for Transmission Type -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_transmission_type"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/transmission_type"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_transmission_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Dropdown for Drivetrain Type -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_drivetrain_type"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/drivetrain"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_drivetrain_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Dropdown for Fuel Type -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_fuel_type"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/fuel_type"
+        android:layout_marginTop="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_fuel_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:editable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Checkbox for Air Conditioning -->
+    <CheckBox
+        android:id="@+id/checkbox_air_conditioning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Air Conditioning"/>
+
+    <!-- Checkbox for Navigation System -->
+    <CheckBox
+        android:id="@+id/checkbox_navigation_system"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Navigation System"/>
+
+    <!-- Checkbox for Bluetooth Connectivity -->
+    <CheckBox
+        android:id="@+id/checkbox_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth Connectivity"/>
+
+    <!-- Apply Filters Button -->
+    <Button
+        android:id="@+id/button_apply_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Apply Filters"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_background"/>
+</LinearLayout>

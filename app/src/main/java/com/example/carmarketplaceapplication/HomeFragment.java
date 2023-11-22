@@ -7,11 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,13 +25,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements FilterBottomSheetFragment.FilterListener {
 
     private RecyclerView featuredCarsRecyclerView;
     private RecyclerView regularCarsRecyclerView;
     private FeaturedCarsAdapter featuredCarsAdapter;
     private RegularCarsAdapter regularCarsAdapter;
     private List<CarListModel> fullCarList = new ArrayList<>();
+    private DrawerLayout drawerLayout;
+
+
+    private MaterialButton filterButton;
+    private EditText searchBar, makeFilter, modelFilter, yearFilter; // Add other filters as needed
 
 
     @Nullable
@@ -43,8 +51,11 @@ public class HomeFragment extends Fragment {
         // Setup the RecyclerViews
 //        setupFeaturedCarsRecyclerView();
         setupRegularCarsRecyclerView();
-
         loadCarListings();
+
+        // In HomeFragment
+        Button filterButton = view.findViewById(R.id.filter_button);
+        filterButton.setOnClickListener(v -> showFilterBottomSheet());
 
         EditText searchBar = view.findViewById(R.id.search_bar);
         searchBar.addTextChangedListener(new TextWatcher() {
@@ -64,6 +75,30 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    private void showFilterBottomSheet() {
+        FilterBottomSheetFragment filterFragment = FilterBottomSheetFragment.newInstance(this);
+        filterFragment.show(getChildFragmentManager(), filterFragment.getTag());
+    }
+
+    @Override
+    public void onFiltersApplied(FilterBottomSheetFragment.FilterParams filterParams) {
+        FirebaseDataHandler dataHandler = new FirebaseDataHandler();
+        dataHandler.fetchFilteredCarListings(filterParams, new FirebaseDataHandler.FetchDataCallback() {
+            @Override
+            public void onSuccess(List<CarListModel> carList) {
+                // Update your RecyclerViews with the filtered list
+                regularCarsAdapter.setCarListings(carList);
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                // Handle errors
+                Log.e("HomeFragment", "Error fetching filtered car listings", exception);
+            }
+        });
+    }
+
+
     private void filterCarListings(String query) {
         // Filter the car listings based on the query
         List<CarListModel> filteredList = new ArrayList<>();
@@ -74,7 +109,7 @@ public class HomeFragment extends Fragment {
         }
 
         // Update your RecyclerViews with the filtered list
-        featuredCarsAdapter.setCarListings(filteredList);
+//        featuredCarsAdapter.setCarListings(filteredList);
         regularCarsAdapter.setCarListings(filteredList);
     }
 
