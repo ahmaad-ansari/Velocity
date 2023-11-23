@@ -133,12 +133,18 @@ public class FirebaseDataHandler {
         }
     }
 
-    /*
-    // Get the currently signed-in user's UID
+    public void deleteCarListing(String carId, SaveDataCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-    * */
-
+        if (carId != null && !carId.isEmpty()) {
+            db.collection("cars").document(carId)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> callback.onSuccess())
+                    .addOnFailureListener(callback::onFailure);
+        } else {
+            callback.onFailure(new Exception("Invalid car ID"));
+        }
+    }
 
     private void uploadImages(List<String> imageUrls, StorageReference storageRef, ImageUploadCallback callback) {
         // Check if the imageUris list is null or empty

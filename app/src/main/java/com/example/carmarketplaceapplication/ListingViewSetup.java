@@ -22,28 +22,6 @@ public class ListingViewSetup {
     static LinearLayout llHighlightsContainer;
     static TextView tvYearMakeModel, tvPrice, tvDescription, tvOwnerName, tvOwnerPhoneNumber;
 
-    public static void initializeImageSliderWithUris(ViewPager2 viewPager2, List<Uri> imageUris, Context context) {
-        List<String> imageUrls = new ArrayList<>();
-        boolean hasValidImages = false;
-
-        for (Uri uri : imageUris) {
-            if (uri != null && !uri.toString().isEmpty()) {
-                imageUrls.add(uri.toString());
-                hasValidImages = true;
-            }
-        }
-
-        if (!hasValidImages) {
-            String placeholderUrl = "android.resource://" + context.getPackageName() + "/" + R.drawable.placeholder_image;
-            imageUrls.add(placeholderUrl);
-        }
-
-        ImageSliderAdapter adapter = new ImageSliderAdapter(context, imageUrls);
-        viewPager2.setAdapter(adapter);
-
-        // Set up TabLayout with ViewPager2 for dot indicators
-    }
-
     public static void initializeImageSliderWithUrls(ViewPager2 viewPager2, List<String> imageUrls, Context context) {
         if (imageUrls == null || imageUrls.isEmpty()) {
             String placeholderUrl = "android.resource://" + context.getPackageName() + "/" + R.drawable.placeholder_image;
@@ -53,9 +31,6 @@ public class ListingViewSetup {
         ImageSliderAdapter adapter = new ImageSliderAdapter(context, imageUrls);
         viewPager2.setAdapter(adapter);
     }
-
-
-
 
     public static void populateListingDetails(View view, CarListModel carModel, Context context) {
         llHighlightsContainer = view.findViewById(R.id.llHighlights);

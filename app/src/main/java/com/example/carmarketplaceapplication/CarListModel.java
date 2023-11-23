@@ -41,6 +41,7 @@ public class CarListModel implements Serializable {
         this.price = 0;
         this.description = null;
         this.imageUris = null;
+        this.imageUrls = null;
         this.videoUris = null;
         this.ownerName = null;
         this.ownerContactNumber = null;
@@ -55,7 +56,7 @@ public class CarListModel implements Serializable {
         this.navigationSystem = false;
         this.bluetoothConnectivity = false;
     }
-    public CarListModel(String carId, String make, String model, int year, String color, double odometer, double price, String description, List<Uri> imageUris, List<Uri> videoUris, String ownerName, String ownerContactNumber, String ownerEmail, String ownerLocation, String transmissionType, String drivetrainType, String fuelType, String numberOfDoors, String numberOfSeats, boolean airConditioning, boolean navigationSystem, boolean bluetoothConnectivity, boolean hasSunroof) {
+    public CarListModel(String carId, String make, String model, int year, String color, double odometer, double price, String description, List<Uri> imageUris, List<String> imageUrls,List<Uri> videoUris, String ownerName, String ownerContactNumber, String ownerEmail, String ownerLocation, String transmissionType, String drivetrainType, String fuelType, String numberOfDoors, String numberOfSeats, boolean airConditioning, boolean navigationSystem, boolean bluetoothConnectivity, boolean hasSunroof) {
         this.carId = carId;
         this.make = make;
         this.model = model;
@@ -65,6 +66,7 @@ public class CarListModel implements Serializable {
         this.price = price;
         this.description = description;
         this.imageUris = imageUris;
+        this.imageUrls = imageUrls;
         this.videoUris = videoUris;
         this.ownerName = ownerName;
         this.ownerContactNumber = ownerContactNumber;

@@ -1,5 +1,6 @@
 package com.example.carmarketplaceapplication;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,9 +22,6 @@ public class PostFragment extends Fragment {
 
     private RecyclerView regularCarsRecyclerView;
     private RegularCarsAdapter regularCarsAdapter;
-
-
-
 
     public PostFragment() {
         // Required empty public constructor
@@ -63,11 +61,41 @@ public class PostFragment extends Fragment {
         regularCarsAdapter = new RegularCarsAdapter(new RegularCarsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CarListModel item) {
-                navigateToCarEditFragment(item);
+                CharSequence[] options = {"Edit", "Delete"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Would you like to edit or delete this post?");
+                builder.setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        navigateToCarEditFragment(item);
+                    } else if (which == 1) {
+                        deletePost(item);
+                    }
+                });
+                builder.show();
             }
         });
         regularCarsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         regularCarsRecyclerView.setAdapter(regularCarsAdapter);
+    }
+
+    private void deletePost(CarListModel item) {
+        FirebaseDataHandler dataHandler = new FirebaseDataHandler();
+        String carId = item.getCarId(); // Get the carId of the listing you want to delete
+
+        dataHandler.deleteCarListing(carId, new FirebaseDataHandler.SaveDataCallback() {
+            @Override
+            public void onSuccess() {
+                // Handle successful deletion
+                Log.d("DeleteCarListing", "Listing deleted successfully");
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                // Handle failure
+                Log.e("DeleteCarListing", "Error deleting listing", exception);
+            }
+        });
+
     }
 
     private void navigateToCarEditFragment(CarListModel carModel) {
@@ -75,12 +103,6 @@ public class PostFragment extends Fragment {
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel.setCarListModel(carModel);
         FragmentManager childFragmentManager = getChildFragmentManager();
-        // Navigate to the PostStepOneFragment for editing
-//        PostStepOneFragment postStepOneFragment = new PostStepOneFragment();
-//        requireActivity().getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, postStepOneFragment) // Replace with the appropriate container ID
-//                .addToBackStack(null) // Add this transaction to the back stack
-//                .commit();
 
         if (childFragmentManager != null) {
             FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
@@ -88,17 +110,6 @@ public class PostFragment extends Fragment {
             fragmentTransaction.commit();
         }
     }
-
-/*
-        // Replace the displayed list of posts with the first step fragment
-        FragmentManager childFragmentManager = getChildFragmentManager();
-        if (childFragmentManager != null) {
-            FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.post_fragment_container, new PostStepOneFragment());
-            fragmentTransaction.commit();
-        }
-* */
-
 
     private void loadCarListings() {
         FirebaseDataHandler dataHandler = new FirebaseDataHandler();
@@ -116,8 +127,6 @@ public class PostFragment extends Fragment {
             }
         });
     }
-
-
 
 
     private void goToFirstStep() {

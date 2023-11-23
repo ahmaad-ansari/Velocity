@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +64,9 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     private SharedViewModel viewModel;
     private CarListModel carModel;
 
+    private ArrayList<Object> imageSources; // Changed to Object to handle both Uri and String
+
+
 
 
 
@@ -78,6 +82,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
         if (carModel != null && carModel.getCarId() != null && !carModel.getCarId().isEmpty()) {
             // Load existing data into the fields for editing
+            Log.e("DEBUG", "LOADING MODEL");
             loadCarData(carModel);
         }
     }
@@ -87,23 +92,32 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
 
+        initializeImageSection(view);
+
+
         viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        viewModel.getImageUrls().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+        viewModel.getImageSources().observe(getViewLifecycleOwner(), new Observer<List<Object>>() {
             @Override
-            public void onChanged(List<String> urls) {
-                if (!urls.equals(imageUrls)) {
-                    imageUrls.clear();
-                    imageUrls.addAll(urls);
-                    imageAdapter.notifyDataSetChanged();
+            public void onChanged(List<Object> sources) {
+                List<String> imagePaths = new ArrayList<>();
+                for (Object source : sources) {
+                    if (source instanceof Uri) {
+                        // It's a Uri, convert to string
+                        imagePaths.add(((Uri) source).toString());
+                    } else if (source instanceof String) {
+                        // It's already a String (URL)
+                        imagePaths.add((String) source);
+                    }
                 }
+                // Update the adapter with the new list
+                imageAdapter.updateImagePaths(imagePaths);
+                imageAdapter.notifyDataSetChanged();
             }
         });
 
 
         Button btnPrevious = view.findViewById(R.id.button_previous);
         btnPrevious.setVisibility(View.GONE);
-
-        initializeImageSection(view);
 
         return view;
     }
@@ -117,8 +131,11 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         autocompleteTransmissionType.setText(carModel.getTransmissionType(), false);
         autocompleteDrivetrainType.setText(carModel.getDrivetrainType(), false);
         autocompleteFuelType.setText(carModel.getFuelType(), false);
-//        // Load images if any
-        viewModel.setImageUrls(carModel.getImageUrls());
+
+        // Load images if any
+        if (carModel.getImageUrls() != null && !carModel.getImageUrls().isEmpty()) {
+            viewModel.setImageSources(new ArrayList<>(carModel.getImageUrls()));
+        }
     }
     private void initializeViews(View view) {
         // Initialize AutoCompleteTextViews
@@ -189,8 +206,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
     private void initializeImageSection(View view) {
         recyclerViewMedia = view.findViewById(R.id.recyclerView_media);
-        imageUrls = new ArrayList<>();
-        imageAdapter = new ImageAdapter(getContext(), imageUrls, viewModel); // Make sure viewModel is initialized
+        imageSources = new ArrayList<>(); // Changed to Object type
+        imageAdapter = new ImageAdapter(getContext(), imageSources, viewModel);
 
         recyclerViewMedia.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewMedia.setAdapter(imageAdapter);
@@ -218,7 +235,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
     private void initializeRecyclerViewWithPlaceholders() {
         for (int i = 0; i < MAX_IMAGES; i++) {
-            imageUrls.add(""); // Uri.EMPTY is used as a placeholder
+            imageSources.add(""); // Uri.EMPTY is used as a placeholder
         }
         if (imageAdapter != null) {
             imageAdapter.notifyDataSetChanged();
@@ -253,10 +270,12 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Handle the error
+                Log.e("PostStepOneFragment", "Error creating image file", ex);
+                return;
             }
             if (photoFile != null) {
-                String photoURI = String.valueOf(FileProvider.getUriForFile(getContext(),
-                        "com.example.carmarketplaceapplication.fileprovider", photoFile));
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
+                        "com.example.carmarketplaceapplication.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
             }
@@ -264,17 +283,10 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",   /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -282,45 +294,62 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String imageUrl = null;
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST) {
-                // Handle gallery selection
-                if (data.getClipData() != null) {
-                    int count = data.getClipData().getItemCount();
-                    for (int i = 0; i < count; i++) {
-                        imageUrl = String.valueOf(data.getClipData().getItemAt(i).getUri());
-                        addImageUrlToList(imageUrl);
-                    }
-                } else if (data.getData() != null) {
-                    imageUrl = String.valueOf(data.getData());
-                    addImageUrlToList(imageUrl);
-                }
+                handleGalleryResult(data);
             } else if (requestCode == CAPTURE_IMAGE_REQUEST) {
-                // Handle camera capture
-                imageUrl = String.valueOf(Uri.fromFile(new File(currentPhotoPath)));
-                addImageUrlToList(imageUrl);
+                handleCameraResult();
             }
-
-            imageAdapter.notifyDataSetChanged();
-            Log.d("PostStepOneFragment", "Image URL: " + imageUrl.toString());
-
         }
     }
 
-    private void addImageUrlToList(String imageUrl) {
-        // Check if there are placeholders to replace
-        int placeholderIndex = imageUrls.indexOf("");
-        if (placeholderIndex != -1) {
-            imageUrls.set(placeholderIndex, imageUrl);
+    private void handleGalleryResult(Intent data) {
+        if (data != null && data.getClipData() != null) {
+            int count = data.getClipData().getItemCount();
+            for (int i = 0; i < count; i++) {
+                Uri imageUri = data.getClipData().getItemAt(i).getUri();
+                addImageSourceToList(imageUri);
+            }
+        } else if (data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            addImageSourceToList(imageUri);
+        }
+    }
+
+    private void handleCameraResult() {
+        Uri imageUri = Uri.fromFile(new File(currentPhotoPath));
+        addImageSourceToList(imageUri);
+    }
+
+    private void addImageSourceToList(Object imageSource) {
+        if (imageSource instanceof Uri) {
+            // If it's a Uri, handle it differently
+            Uri imageUri = (Uri) imageSource;
+            if (imageSources.size() < MAX_IMAGES) {
+                imageSources.add(0, imageUri); // Add Uri to the front of the list
+            } else {
+                // Handle when the list is full
+                // You might want to decide how to handle this scenario, e.g., remove the last element before adding a new one
+                imageSources.remove(imageSources.size() - 1);
+                imageSources.add(0, imageUri);
+            }
         } else {
-            if (imageUrls.size() < MAX_IMAGES) {
-                imageUrls.add(imageUrl);
+            // Check if there are placeholders to replace
+            int placeholderIndex = imageSources.indexOf(""); // Assuming "" is a placeholder
+            if (placeholderIndex != -1) {
+                imageSources.set(placeholderIndex, imageSource);
+            } else {
+                if (imageSources.size() < MAX_IMAGES) {
+                    imageSources.add(imageSource);
+                }
             }
         }
+
         imageAdapter.notifyDataSetChanged();
-        viewModel.setImageUrls(new ArrayList<>(imageUrls));
+        viewModel.setImageSources(new ArrayList<>(imageSources)); // Update ViewModel with new list
     }
+
+
 
     @Override
     protected void onNextClicked() {
@@ -331,7 +360,6 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
                 parentFragment.goToNextStep(new PostStepTwoFragment());
             }
             else {
-                Log.e("DEBUG", "FAGGGGG");
             }
         } else {
             // Show error or validation feedback
@@ -408,7 +436,17 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         carModel.setTransmissionType(transmissionType);
         carModel.setDrivetrainType(drivetrainType);
         carModel.setFuelType(fuelType);
-        carModel.setImageUrls(new ArrayList<>(imageUrls));
+//        carModel.setImageUrls(new ArrayList<String>(imageSources));
+
+        List<String> urls = new ArrayList<>();
+        for (Object imageSource : imageSources) {
+            if (imageSource instanceof String) {
+                urls.add((String) imageSource);
+            }
+            // If you also want to handle Uri objects, you can add an else-if block here
+            // to convert Uri to String or handle them as per your requirement.
+        }
+        carModel.setImageUrls(urls);
 
         viewModel.setCarListModel(carModel);
 

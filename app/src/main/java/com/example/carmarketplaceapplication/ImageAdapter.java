@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,29 +12,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-    private final ArrayList<String> imageUrls;
-    private Context context;
-    private LayoutInflater inflater;
-    private SharedViewModel viewModel; // Add ViewModel reference
+    private final List<Object> imageSources; // Updated to List<Object> to handle both Uri and String
+    private final Context context;
+    private final LayoutInflater inflater;
+    private final SharedViewModel viewModel;
 
-
-    public ImageAdapter(Context context, ArrayList<String> imageUrls, SharedViewModel viewModel) {
+    public ImageAdapter(Context context, List<Object> imageSources, SharedViewModel viewModel) {
         this.context = context;
-        this.imageUrls = imageUrls;
+        this.imageSources = imageSources;
         this.inflater = LayoutInflater.from(context);
-        this.viewModel = viewModel; // Initialize ViewModel
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -45,38 +41,35 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String imageUrl = imageUrls.get(position);
-        Log.d("ImageAdapter", "Loading URL: " + imageUrl);
-
-
-        if (!imageUrl.equals("")) {
+        Object imageSource = imageSources.get(position);
+        if (imageSource instanceof Uri) {
+            Uri imageUri = (Uri) imageSource;
             Glide.with(context)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_image) // Placeholder image
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.e("ImageAdapter", "Load failed for URL: " + imageUrl, e);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
+                    .load(imageUri)
+                    .placeholder(R.drawable.placeholder_image)
                     .into(holder.imageView);
-        } else {
-            // Handle placeholder URL
-            holder.imageView.setImageResource(R.drawable.placeholder_image);
+        } else if (imageSource instanceof String) {
+            String imageUrl = (String) imageSource;
+            if (!TextUtils.isEmpty(imageUrl) && !imageUrl.equals("placeholder")) {
+                Glide.with(context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.placeholder_image)
+                        .into(holder.imageView);
+            } else {
+                holder.imageView.setImageResource(R.drawable.placeholder_image);
+            }
         }
-
         holder.imageView.setOnClickListener(v -> showRemoveDialog(position, holder));
     }
 
     @Override
     public int getItemCount() {
-        return imageUrls.size();
+        return imageSources.size();
+    }
+
+    public void updateImagePaths(List<String> newImagePaths) {
+        this.imageSources.clear();
+        this.imageSources.addAll(newImagePaths);
     }
 
     private void showRemoveDialog(int position, ViewHolder holder) {
@@ -84,15 +77,23 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .setTitle("Remove Image")
                 .setMessage("Do you want to remove this image?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    imageUrls.remove(position);
-                    notifyDataSetChanged();
+                    imageSources.remove(position);
+                    notifyItemRemoved(position);
+
+                    // Add a placeholder if the list size is less than MAX_IMAGES
+                    if (imageSources.size() < 10) {
+                        imageSources.add(""); // Assuming "" is a placeholder
+                        notifyItemInserted(imageSources.size() - 1);
+                    }
+
                     if (viewModel != null) {
-                        viewModel.setImageUrls(new ArrayList<>(imageUrls)); // Update ViewModel
+                        viewModel.setImageSources(new ArrayList<>(imageSources)); // Update ViewModel
                     }
                 })
                 .setNegativeButton("No", null)
                 .show();
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
