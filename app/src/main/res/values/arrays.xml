@@ -70,6 +70,7 @@
     <string-array name="drivetrain_types">
         <item>Front-Wheel-Drive (FWD)</item>
         <item>Rear-Wheel-Drive (RWD)</item>
+        <item>All-Wheel-Drive (AWD)</item>
         <item>Four-Wheel-Drive (4WD)</item>
         <!-- Add more items as needed -->
     </string-array>

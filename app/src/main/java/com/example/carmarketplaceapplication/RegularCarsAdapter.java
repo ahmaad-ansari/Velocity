@@ -64,7 +64,7 @@ public class RegularCarsAdapter extends RecyclerView.Adapter<RegularCarsAdapter.
         void bind(final CarListModel item, final OnItemClickListener listener) {
             modelTextView.setText(item.getMake() + " " + item.getModel());
             odometerTextView.setText(String.format("%,.0f km", item.getOdometer()));
-            priceTextView.setText(String.format("$%,.2f", item.getPrice()));
+            priceTextView.setText(String.format("$%,.0f", item.getPrice()));
 
             List<String> imageUrls = item.getImageUrls();
             if (imageUrls != null && !imageUrls.isEmpty()) {

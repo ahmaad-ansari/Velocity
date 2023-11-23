@@ -210,9 +210,6 @@ public class FirebaseDataHandler {
         }).addOnFailureListener(callback::onFailure);
     }
 
-
-
-
     public void fetchCarListings(FetchDataCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("cars")
@@ -228,6 +225,4 @@ public class FirebaseDataHandler {
                 })
                 .addOnFailureListener(callback::onFailure);
     }
-
-
 }

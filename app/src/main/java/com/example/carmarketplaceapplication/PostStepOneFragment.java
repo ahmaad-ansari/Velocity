@@ -74,6 +74,12 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     public void onResume() {
         super.onResume();
         initializeViews(view);
+        carModel = viewModel.getCarListModel().getValue();
+
+        if (carModel != null && carModel.getCarId() != null && !carModel.getCarId().isEmpty()) {
+            // Load existing data into the fields for editing
+            loadCarData(carModel);
+        }
     }
 
     @Override
@@ -100,6 +106,19 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         initializeImageSection(view);
 
         return view;
+    }
+
+    private void loadCarData(CarListModel carModel) {
+        // Load data into AutoCompleteTextViews and EditTexts
+        autocompleteCarMake.setText(carModel.getMake(), false);
+        autocompleteCarModel.setText(carModel.getModel(), false);
+        editTextCarYear.setText(String.valueOf(carModel.getYear()));
+        autocompleteTransmissionType.setText(carModel.getTransmissionType(), false);
+        autocompleteDrivetrainType.setText(carModel.getDrivetrainType(), false);
+        autocompleteFuelType.setText(carModel.getFuelType(), false);
+//
+//        // Load images if any
+//        viewModel.setImageUris(carModel.getImageUris());
     }
     private void initializeViews(View view) {
         // Initialize AutoCompleteTextViews

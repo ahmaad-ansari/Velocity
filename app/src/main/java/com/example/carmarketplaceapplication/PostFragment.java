@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,13 +63,26 @@ public class PostFragment extends Fragment {
         regularCarsAdapter = new RegularCarsAdapter(new RegularCarsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CarListModel item) {
-                // Implement your action on item click
-                // For example, navigate to a detailed car view
+                navigateToCarEditFragment(item);
             }
         });
         regularCarsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         regularCarsRecyclerView.setAdapter(regularCarsAdapter);
     }
+
+    private void navigateToCarEditFragment(CarListModel carModel) {
+        // Update the SharedViewModel with the selected CarListModel
+        SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        viewModel.setCarListModel(carModel);
+
+        // Navigate to the PostStepOneFragment for editing
+        PostStepOneFragment postStepOneFragment = new PostStepOneFragment();
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, postStepOneFragment) // Replace with the appropriate container ID
+                .addToBackStack(null) // Add this transaction to the back stack
+                .commit();
+    }
+
 
     private void loadCarListings() {
         FirebaseDataHandler dataHandler = new FirebaseDataHandler();
