@@ -32,11 +32,6 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
     private FeaturedCarsAdapter featuredCarsAdapter;
     private RegularCarsAdapter regularCarsAdapter;
     private List<CarListModel> fullCarList = new ArrayList<>();
-    private DrawerLayout drawerLayout;
-
-
-    private MaterialButton filterButton;
-    private EditText searchBar, makeFilter, modelFilter, yearFilter; // Add other filters as needed
 
 
     @Nullable

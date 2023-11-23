@@ -70,6 +70,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     public void updateImagePaths(List<String> newImagePaths) {
         this.imageSources.clear();
         this.imageSources.addAll(newImagePaths);
+        notifyDataSetChanged();
     }
 
     private void showRemoveDialog(int position, ViewHolder holder) {

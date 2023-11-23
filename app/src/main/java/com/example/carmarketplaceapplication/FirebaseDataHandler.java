@@ -55,35 +55,8 @@ public class FirebaseDataHandler {
     public void updateCarListing(CarListModel carModel, UpdateDataCallback callback) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-
         List<String> imageUrls = carModel.getImageUrls();
-        boolean needsUpload = false;
-
-        for (String url : imageUrls) {
-            // Check if URL is a local file path that needs uploading
-            if (url != null && !url.startsWith("https://firebasestorage.googleapis.com")) {
-                needsUpload = true;
-                break;
-            }
-        }
-
-        if (needsUpload) {
-            // Proceed with re-uploading images
-            uploadImages(imageUrls, storageRef, new ImageUploadCallback() {
-                @Override
-                public void onUploadSuccess(List<String> newImageUrls) {
-                    updateCarDataInFirestore(carModel, newImageUrls, callback);
-                }
-
-                @Override
-                public void onUploadFailure(Exception exception) {
-                    callback.onFailure(exception);
-                }
-            });
-        } else {
-            // Use existing image URLs without uploading
-            updateCarDataInFirestore(carModel, imageUrls, callback);
-        }
+        updateCarDataInFirestore(carModel, imageUrls, callback);
     }
 
     private void updateCarDataInFirestore(CarListModel carModel, List<String> imageUrls, UpdateDataCallback callback) {

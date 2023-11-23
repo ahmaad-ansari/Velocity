@@ -345,6 +345,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             }
         }
 
+        Log.e("DEBUG", String.valueOf(imageSources));
+
         imageAdapter.notifyDataSetChanged();
         viewModel.setImageSources(new ArrayList<>(imageSources)); // Update ViewModel with new list
     }
