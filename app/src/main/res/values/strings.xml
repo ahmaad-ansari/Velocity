@@ -68,5 +68,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="contact_me">Contact Me</string>
     <string name="your_listings">My Listings</string>
+    <string name="create_post"></string>
+    <string name="delete_account">Delete</string>
 
 </resources>

@@ -30,6 +30,53 @@
                 android:src="@drawable/ic_account"
                 app:shapeAppearanceOverlay="@style/CircleShape" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/imageViewProfilePicture">
+
+                <!-- Edit Profile FAB -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonEditProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_edit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonLogout"
+                    android:backgroundTint="@color/primaryColor"
+                    app:tint="@android:color/white"
+                    android:layout_marginTop="16dp"
+                    tools:ignore="MissingConstraints" />
+
+                <!-- Logout FAB -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonLogout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_logout"
+                    android:backgroundTint="@color/secondaryDarkColor"
+                    app:layout_constraintStart_toEndOf="@id/buttonEditProfile"
+                    app:layout_constraintEnd_toStartOf="@id/buttonDeleteAccount"
+                    app:tint="@android:color/white"
+                    android:layout_marginTop="16dp"
+                    tools:ignore="MissingConstraints" />
+
+                <!-- Delete Account FAB -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/buttonDeleteAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_delete"
+                    android:backgroundTint="@color/errorColor"
+                    app:layout_constraintStart_toEndOf="@id/buttonLogout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:tint="@android:color/white"
+                    android:layout_marginTop="16dp"
+                    tools:ignore="MissingConstraints" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutFirstName"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -98,45 +145,29 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <Button
-                    android:id="@+id/buttonEditProfile"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/edit_profile" />
-
-                <Button
-                    android:id="@+id/buttonSaveProfile"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_weight="1"
-                    android:text="@string/save_profile"
-                    android:visibility="gone" />
-
+                <!-- Cancel Button -->
                 <Button
                     android:id="@+id/buttonCancel"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
-                    android:layout_width="match_parent"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cancel"
                     android:visibility="gone" />
+
+                <!-- Save Profile Button -->
+                <Button
+                    android:id="@+id/buttonSaveProfile"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/primaryColor"
+                    android:text="@string/save_profile"
+                    android:visibility="gone" />
             </LinearLayout>
 
-            <!-- Logout Button -->
-            <Button
-                android:id="@+id/buttonLogout"
-                style="@style/Widget.Material3.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/logout"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/buttonsLayout" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

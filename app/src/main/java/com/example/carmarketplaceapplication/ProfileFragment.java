@@ -2,6 +2,7 @@ package com.example.carmarketplaceapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +28,8 @@ import java.util.Map;
 public class ProfileFragment extends Fragment {
 
     private EditText mFirstNameField, mLastNameField, mEmailField, mPhoneNumberField;
-    private Button mEditProfileButton, mSaveProfileButton, mCancelEditsButton, mLogoutButton;
+    private FloatingActionButton mEditProfileButton, mLogoutButton, mDeleteButton;
+    private Button mSaveProfileButton, mCancelEditsButton;
     private ImageView imageViewProfilePicture;
 
     private UserProfileModel originalUserData;
@@ -51,10 +57,44 @@ public class ProfileFragment extends Fragment {
         mSaveProfileButton = view.findViewById(R.id.buttonSaveProfile);
         mCancelEditsButton = view.findViewById(R.id.buttonCancel);
         mLogoutButton = view.findViewById(R.id.buttonLogout);
+        mDeleteButton = view.findViewById(R.id.buttonDeleteAccount);
 
         mEditProfileButton.setOnClickListener(view1 -> enableEditMode());
-        mSaveProfileButton.setOnClickListener(view12 -> saveProfile());
         mCancelEditsButton.setOnClickListener(view13 -> cancelEdits());
+        mSaveProfileButton.setOnClickListener(view12 -> saveProfile());
+
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                if (user != null) {
+                    user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("DeleteAccount", "User account deleted.");
+                                // Redirect to login/signup page or close the app
+                                if (getActivity() != null) {
+                                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    getActivity().startActivity(intent);
+                                    getActivity().finish();
+                                }
+                            } else {
+                                Log.e("DeleteAccount", "Failed to delete user.", task.getException());
+                                if (getActivity() != null) {
+                                    Toast.makeText(getActivity(), "Failed to delete account", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
 
         mLogoutButton.setOnClickListener(view14 -> {
             mAuth.signOut();
@@ -69,9 +109,8 @@ public class ProfileFragment extends Fragment {
     private void enableEditMode() {
         // Make EditTexts editable
         setEditTextsEditable(true);
-        mSaveProfileButton.setVisibility(View.VISIBLE);
         mCancelEditsButton.setVisibility(View.VISIBLE);
-        mEditProfileButton.setVisibility(View.GONE);
+        mSaveProfileButton.setVisibility(View.VISIBLE);
     }
 
     private void navigateToLogin() {
@@ -100,9 +139,8 @@ public class ProfileFragment extends Fragment {
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
                         setEditTextsEditable(false);
-                        mSaveProfileButton.setVisibility(View.GONE);
                         mCancelEditsButton.setVisibility(View.GONE);
-                        mEditProfileButton.setVisibility(View.VISIBLE);
+                        mSaveProfileButton.setVisibility(View.GONE);
                     })
                     .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
@@ -118,9 +156,8 @@ public class ProfileFragment extends Fragment {
         }
 
         // Hide the "Cancel" and "Save" buttons, and show the "Edit Profile" button
-        mSaveProfileButton.setVisibility(View.GONE);
         mCancelEditsButton.setVisibility(View.GONE);
-        mEditProfileButton.setVisibility(View.VISIBLE);
+        mSaveProfileButton.setVisibility(View.GONE);
 
         // Optionally, disable the fields to prevent editing
         setEditTextsEditable(false);

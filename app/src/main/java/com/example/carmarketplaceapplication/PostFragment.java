@@ -15,6 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +52,7 @@ public class PostFragment extends Fragment {
         loadCarListings();
 
 
-        Button btnPost = view.findViewById(R.id.btnPost);
+        ExtendedFloatingActionButton btnPost = view.findViewById(R.id.btnPost);
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

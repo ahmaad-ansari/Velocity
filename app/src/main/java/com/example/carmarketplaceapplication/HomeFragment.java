@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -56,7 +57,7 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
 
 
         
-        MaterialButton filterButton = view.findViewById(R.id.filter_button);
+        ImageButton filterButton = view.findViewById(R.id.filter_button);
         filterButton.setOnClickListener(v -> showFilterBottomSheet());
 
         EditText searchBar = view.findViewById(R.id.search_bar);
