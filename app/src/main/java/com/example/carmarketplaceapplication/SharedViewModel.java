@@ -16,26 +16,31 @@ public class SharedViewModel extends ViewModel {
         carModel.setValue(model);
     }
 
+    public void clearCarModel() {
+        carModel.setValue(null);
+    }
+
+
     public LiveData<CarListModel> getCarListModel() {
         return carModel;
     }
 
-    private MutableLiveData<List<Uri>> imageUris = new MutableLiveData<>();
+    private MutableLiveData<List<String>> imageUrls = new MutableLiveData<>();
 
-    public LiveData<List<Uri>> getImageUris() {
-        return imageUris;
+    public LiveData<List<String>> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setImageUris(List<Uri> uris) {
-        imageUris.setValue(uris);
+    public void setImageUrls(List<String> urls) {
+        imageUrls.setValue(urls);
     }
 
-    public void clearImageUris() {
-        List<Uri> emptyUriList = new ArrayList<>();
+    public void clearImageUrls() {
+        List<String> emptyUrlList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            emptyUriList.add(Uri.EMPTY);
+            emptyUrlList.add("");
         }
-        imageUris.postValue(emptyUriList); // Use postValue to update the LiveData
+        imageUrls.postValue(emptyUrlList); // Use postValue to update the LiveData
     }
 }
 

@@ -33,7 +33,7 @@ public class FirebaseDataHandler {
         StorageReference storageRef = storage.getReference();
 
         // Step 1: Upload images and get URLs
-        uploadImages(carModel.getImageUris(), storageRef, new ImageUploadCallback() {
+        uploadImages(carModel.getImageUrls(), storageRef, new ImageUploadCallback() {
             @Override
             public void onUploadSuccess(List<String> imageUrls) {
                 // Step 2: Save car data with image URLs to Firestore
@@ -47,9 +47,102 @@ public class FirebaseDataHandler {
         });
     }
 
-    private void uploadImages(List<Uri> imageUris, StorageReference storageRef, ImageUploadCallback callback) {
+    public interface UpdateDataCallback {
+        void onSuccess();
+        void onFailure(Exception exception);
+    }
+
+    public void updateCarListing(CarListModel carModel, UpdateDataCallback callback) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        List<String> imageUrls = carModel.getImageUrls();
+        boolean needsUpload = false;
+
+        for (String url : imageUrls) {
+            // Check if URL is a local file path that needs uploading
+            if (url != null && !url.startsWith("https://firebasestorage.googleapis.com")) {
+                needsUpload = true;
+                break;
+            }
+        }
+
+        if (needsUpload) {
+            // Proceed with re-uploading images
+            uploadImages(imageUrls, storageRef, new ImageUploadCallback() {
+                @Override
+                public void onUploadSuccess(List<String> newImageUrls) {
+                    updateCarDataInFirestore(carModel, newImageUrls, callback);
+                }
+
+                @Override
+                public void onUploadFailure(Exception exception) {
+                    callback.onFailure(exception);
+                }
+            });
+        } else {
+            // Use existing image URLs without uploading
+            updateCarDataInFirestore(carModel, imageUrls, callback);
+        }
+    }
+
+    private void updateCarDataInFirestore(CarListModel carModel, List<String> imageUrls, UpdateDataCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> carData = new HashMap<>();
+        // Populate carData with all fields from carModel similar to saveCarDataToFirestore
+        carData.put("make", carModel.getMake());
+        carData.put("model", carModel.getModel());
+        carData.put("year", carModel.getYear());
+        carData.put("color", carModel.getColor());
+        carData.put("odometer", carModel.getOdometer());
+        carData.put("price", carModel.getPrice());
+        carData.put("description", carModel.getDescription());
+        carData.put("ownerName", carModel.getOwnerName());
+        carData.put("ownerContactNumber", carModel.getOwnerContactNumber());
+        carData.put("ownerEmail", carModel.getOwnerEmail());
+        carData.put("ownerLocation", carModel.getOwnerLocation());
+        carData.put("transmissionType", carModel.getTransmissionType());
+        carData.put("drivetrainType", carModel.getDrivetrainType());
+        carData.put("fuelType", carModel.getFuelType());
+        carData.put("numberOfDoors", carModel.getNumberOfDoors());
+        carData.put("numberOfSeats", carModel.getNumberOfSeats());
+        carData.put("airConditioning", carModel.isAirConditioning());
+        carData.put("navigationSystem", carModel.isNavigationSystem());
+        carData.put("bluetoothConnectivity", carModel.isBluetoothConnectivity());
+
+        carData.put("imageUrls", imageUrls); // Updated image URLs
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userUid = currentUser.getUid();
+            carData.put("uid", userUid);
+
+            String carId = carModel.getCarId();
+            if (carId == null || carId.isEmpty()) {
+                // Generate a new document ID if carId is null or empty
+                carId = db.collection("cars").document().getId();
+            } else {
+                callback.onFailure(new Exception("Car ID is null or empty"));
+            }
+            db.collection("cars").document(carId)
+                    .set(carData)
+                    .addOnSuccessListener(aVoid -> callback.onSuccess())
+                    .addOnFailureListener(callback::onFailure);
+        } else {
+            callback.onFailure(new Exception("User not signed in"));
+        }
+    }
+
+    /*
+    // Get the currently signed-in user's UID
+
+
+    * */
+
+
+    private void uploadImages(List<String> imageUrls, StorageReference storageRef, ImageUploadCallback callback) {
         // Check if the imageUris list is null or empty
-        if (imageUris == null || imageUris.isEmpty()) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
             // No images to upload, so immediately call onUploadSuccess with an empty list or a predefined response
             callback.onUploadSuccess(new ArrayList<>()); // empty list
             return;
@@ -58,16 +151,16 @@ public class FirebaseDataHandler {
         List<String> uploadedImageUrls = new ArrayList<>();
         AtomicInteger uploadCounter = new AtomicInteger(0);
 
-        for (Uri uri : imageUris) {
-            if (uri != null && !uri.toString().isEmpty()) {
+        for (String url : imageUrls) {
+            if (url != null && !url.isEmpty()) {
                 String path = "images/" + UUID.randomUUID().toString() + ".jpg";
                 StorageReference imageRef = storageRef.child(path);
 
-                UploadTask uploadTask = imageRef.putFile(uri);
+                UploadTask uploadTask = imageRef.putFile(Uri.parse(url));
                 uploadTask.addOnSuccessListener(taskSnapshot -> {
-                    imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                        uploadedImageUrls.add(downloadUri.toString());
-                        if (uploadCounter.incrementAndGet() == imageUris.size()) {
+                    imageRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+                        uploadedImageUrls.add(downloadUrl.toString());
+                        if (uploadCounter.incrementAndGet() == imageUrls.size()) {
                             callback.onUploadSuccess(uploadedImageUrls);
                         }
                     }).addOnFailureListener(e -> {
@@ -80,7 +173,7 @@ public class FirebaseDataHandler {
                 });
             } else {
 //                uploadedImageUrls.add(""); // Add empty string for non-existent URIs
-                if (uploadCounter.incrementAndGet() == imageUris.size()) {
+                if (uploadCounter.incrementAndGet() == imageUrls.size()) {
                     callback.onUploadSuccess(uploadedImageUrls);
                 }
             }

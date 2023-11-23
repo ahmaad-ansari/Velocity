@@ -24,6 +24,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Locale;
+
 public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapReadyCallback  {
 
     private AutoCompleteTextView autocompleteCarColor, autocompleteNumberOfDoors, autocompleteNumberOfSeats;
@@ -33,6 +35,8 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     private View view;
     private GoogleMap mMap;
     private SharedViewModel viewModel;
+    private CarListModel carModel;
+
 
 
 
@@ -44,6 +48,12 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     public void onResume() {
         super.onResume();
         initializeFormFields(view);
+        carModel = viewModel.getCarListModel().getValue();
+
+        if (carModel != null && carModel.getCarId() != null && !carModel.getCarId().isEmpty()) {
+            // Load existing data into the fields for editing
+            loadCarData(carModel);
+        }
     }
 
     @Override
@@ -64,6 +74,20 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         }
 
         return view;
+    }
+
+    private void loadCarData(CarListModel carModel) {
+        // Load data into AutoCompleteTextViews, EditTexts, and CheckBoxes
+        autocompleteCarColor.setText(carModel.getColor(), false);
+        editTextOdometer.setText(String.format("%.0f", carModel.getOdometer()));
+        editTextPrice.setText(String.format("%.0f", carModel.getPrice()));
+        editTextDescription.setText(carModel.getDescription());
+        checkBoxAC.setChecked(carModel.isAirConditioning());
+        checkBoxNav.setChecked(carModel.isNavigationSystem());
+        checkBoxBT.setChecked(carModel.isBluetoothConnectivity());
+        autocompleteNumberOfSeats.setText(carModel.getNumberOfSeats(), false);
+        autocompleteNumberOfDoors.setText(carModel.getNumberOfDoors(), false);
+        //Load map
     }
 
     private void initializeFormFields(View view) {

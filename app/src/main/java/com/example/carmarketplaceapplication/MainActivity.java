@@ -35,15 +35,15 @@ public class MainActivity extends AppCompatActivity {
                 Fragment selectedFragment = null;
 
                 if (item.getItemId() == R.id.nav_home) {
-                    viewModel.clearImageUris();
+                    viewModel.clearImageUrls();
                     selectedFragment = new HomeFragment();
                 } else if (item.getItemId() == R.id.nav_post) {
                     selectedFragment = new PostFragment();
                 } else if (item.getItemId() == R.id.nav_search) {
-                    viewModel.clearImageUris();
+                    viewModel.clearImageUrls();
                     selectedFragment = new SearchFragment();
                 } else if (item.getItemId() == R.id.nav_profile) {
-                    viewModel.clearImageUris();
+                    viewModel.clearImageUrls();
                     selectedFragment = new ProfileFragment();
                 } else {
                     // Handle other menu items
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             };
 
     public void showHomeFragment() {
-        viewModel.clearImageUris();
+        viewModel.clearImageUrls();
         HomeFragment homeFragment = new HomeFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, homeFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showPostFragment() {
-        viewModel.clearImageUris();
+        viewModel.clearImageUrls();
         PostFragment postFragment = new PostFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, postFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed

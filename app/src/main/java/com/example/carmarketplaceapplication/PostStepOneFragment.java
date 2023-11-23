@@ -58,7 +58,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
     private String currentPhotoPath;
     private ImageAdapter imageAdapter;
-    private ArrayList<Uri> imageUris;
+    private ArrayList<String> imageUrls;
     RecyclerView recyclerViewMedia;
     private SharedViewModel viewModel;
     private CarListModel carModel;
@@ -88,12 +88,12 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        viewModel.getImageUris().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
+        viewModel.getImageUrls().observe(getViewLifecycleOwner(), new Observer<List<String>>() {
             @Override
-            public void onChanged(List<Uri> uris) {
-                if (!uris.equals(imageUris)) {
-                    imageUris.clear();
-                    imageUris.addAll(uris);
+            public void onChanged(List<String> urls) {
+                if (!urls.equals(imageUrls)) {
+                    imageUrls.clear();
+                    imageUrls.addAll(urls);
                     imageAdapter.notifyDataSetChanged();
                 }
             }
@@ -109,6 +109,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     }
 
     private void loadCarData(CarListModel carModel) {
+        Log.e("DEBUG", carModel.toString());
         // Load data into AutoCompleteTextViews and EditTexts
         autocompleteCarMake.setText(carModel.getMake(), false);
         autocompleteCarModel.setText(carModel.getModel(), false);
@@ -116,9 +117,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         autocompleteTransmissionType.setText(carModel.getTransmissionType(), false);
         autocompleteDrivetrainType.setText(carModel.getDrivetrainType(), false);
         autocompleteFuelType.setText(carModel.getFuelType(), false);
-//
 //        // Load images if any
-//        viewModel.setImageUris(carModel.getImageUris());
+        viewModel.setImageUrls(carModel.getImageUrls());
     }
     private void initializeViews(View view) {
         // Initialize AutoCompleteTextViews
@@ -189,8 +189,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
     private void initializeImageSection(View view) {
         recyclerViewMedia = view.findViewById(R.id.recyclerView_media);
-        imageUris = new ArrayList<>();
-        imageAdapter = new ImageAdapter(getContext(), imageUris, viewModel); // Make sure viewModel is initialized
+        imageUrls = new ArrayList<>();
+        imageAdapter = new ImageAdapter(getContext(), imageUrls, viewModel); // Make sure viewModel is initialized
 
         recyclerViewMedia.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewMedia.setAdapter(imageAdapter);
@@ -218,7 +218,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
     private void initializeRecyclerViewWithPlaceholders() {
         for (int i = 0; i < MAX_IMAGES; i++) {
-            imageUris.add(Uri.EMPTY); // Uri.EMPTY is used as a placeholder
+            imageUrls.add(""); // Uri.EMPTY is used as a placeholder
         }
         if (imageAdapter != null) {
             imageAdapter.notifyDataSetChanged();
@@ -255,8 +255,8 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
                 // Handle the error
             }
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(getContext(),
-                        "com.example.carmarketplaceapplication.fileprovider", photoFile);
+                String photoURI = String.valueOf(FileProvider.getUriForFile(getContext(),
+                        "com.example.carmarketplaceapplication.fileprovider", photoFile));
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST);
             }
@@ -282,44 +282,44 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri imageUri = null;
+        String imageUrl = null;
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST) {
                 // Handle gallery selection
                 if (data.getClipData() != null) {
                     int count = data.getClipData().getItemCount();
                     for (int i = 0; i < count; i++) {
-                        imageUri = data.getClipData().getItemAt(i).getUri();
-                        addImageUriToList(imageUri);
+                        imageUrl = String.valueOf(data.getClipData().getItemAt(i).getUri());
+                        addImageUrlToList(imageUrl);
                     }
                 } else if (data.getData() != null) {
-                    imageUri = data.getData();
-                    addImageUriToList(imageUri);
+                    imageUrl = String.valueOf(data.getData());
+                    addImageUrlToList(imageUrl);
                 }
             } else if (requestCode == CAPTURE_IMAGE_REQUEST) {
                 // Handle camera capture
-                imageUri = Uri.fromFile(new File(currentPhotoPath));
-                addImageUriToList(imageUri);
+                imageUrl = String.valueOf(Uri.fromFile(new File(currentPhotoPath)));
+                addImageUrlToList(imageUrl);
             }
 
             imageAdapter.notifyDataSetChanged();
-            Log.d("PostStepOneFragment", "Image URI: " + imageUri.toString());
+            Log.d("PostStepOneFragment", "Image URL: " + imageUrl.toString());
 
         }
     }
 
-    private void addImageUriToList(Uri imageUri) {
+    private void addImageUrlToList(String imageUrl) {
         // Check if there are placeholders to replace
-        int placeholderIndex = imageUris.indexOf(Uri.EMPTY);
+        int placeholderIndex = imageUrls.indexOf("");
         if (placeholderIndex != -1) {
-            imageUris.set(placeholderIndex, imageUri);
+            imageUrls.set(placeholderIndex, imageUrl);
         } else {
-            if (imageUris.size() < MAX_IMAGES) {
-                imageUris.add(imageUri);
+            if (imageUrls.size() < MAX_IMAGES) {
+                imageUrls.add(imageUrl);
             }
         }
         imageAdapter.notifyDataSetChanged();
-        viewModel.setImageUris(new ArrayList<>(imageUris));
+        viewModel.setImageUrls(new ArrayList<>(imageUrls));
     }
 
     @Override
@@ -329,6 +329,9 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
                 parentFragment.goToNextStep(new PostStepTwoFragment());
+            }
+            else {
+                Log.e("DEBUG", "FAGGGGG");
             }
         } else {
             // Show error or validation feedback
@@ -405,7 +408,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         carModel.setTransmissionType(transmissionType);
         carModel.setDrivetrainType(drivetrainType);
         carModel.setFuelType(fuelType);
-        carModel.setImageUris(new ArrayList<>(imageUris));
+        carModel.setImageUrls(new ArrayList<>(imageUrls));
 
         viewModel.setCarListModel(carModel);
 

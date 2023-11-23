@@ -74,14 +74,30 @@ public class PostFragment extends Fragment {
         // Update the SharedViewModel with the selected CarListModel
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel.setCarListModel(carModel);
-
+        FragmentManager childFragmentManager = getChildFragmentManager();
         // Navigate to the PostStepOneFragment for editing
-        PostStepOneFragment postStepOneFragment = new PostStepOneFragment();
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, postStepOneFragment) // Replace with the appropriate container ID
-                .addToBackStack(null) // Add this transaction to the back stack
-                .commit();
+//        PostStepOneFragment postStepOneFragment = new PostStepOneFragment();
+//        requireActivity().getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, postStepOneFragment) // Replace with the appropriate container ID
+//                .addToBackStack(null) // Add this transaction to the back stack
+//                .commit();
+
+        if (childFragmentManager != null) {
+            FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.post_fragment_container, new PostStepOneFragment());
+            fragmentTransaction.commit();
+        }
     }
+
+/*
+        // Replace the displayed list of posts with the first step fragment
+        FragmentManager childFragmentManager = getChildFragmentManager();
+        if (childFragmentManager != null) {
+            FragmentTransaction fragmentTransaction = childFragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.post_fragment_container, new PostStepOneFragment());
+            fragmentTransaction.commit();
+        }
+* */
 
 
     private void loadCarListings() {
@@ -105,6 +121,8 @@ public class PostFragment extends Fragment {
 
 
     private void goToFirstStep() {
+        SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        viewModel.clearCarModel();
         // Replace the displayed list of posts with the first step fragment
         FragmentManager childFragmentManager = getChildFragmentManager();
         if (childFragmentManager != null) {
