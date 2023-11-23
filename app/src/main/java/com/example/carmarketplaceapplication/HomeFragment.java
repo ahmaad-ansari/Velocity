@@ -1,5 +1,7 @@
 package com.example.carmarketplaceapplication;
 
+import static android.icu.lang.UCharacter.DecompositionType.SMALL;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,7 +51,12 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
         loadCarListings();
 
         // In HomeFragment
-        Button filterButton = view.findViewById(R.id.filter_button);
+        // Inside your activity or fragment
+        
+
+
+        
+        MaterialButton filterButton = view.findViewById(R.id.filter_button);
         filterButton.setOnClickListener(v -> showFilterBottomSheet());
 
         EditText searchBar = view.findViewById(R.id.search_bar);

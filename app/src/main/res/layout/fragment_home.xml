@@ -25,12 +25,14 @@
             android:background="@drawable/search_bar_background" />
 
         <!-- Filter Button -->
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/filter_button"
-            style="@style/FilterButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter" />
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_filter" />
+
+
     </LinearLayout>
 
     <!-- Scrollable Content -->
