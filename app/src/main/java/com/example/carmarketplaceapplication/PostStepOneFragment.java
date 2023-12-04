@@ -264,6 +264,7 @@ public class PostStepOneFragment extends PostStepBaseFragment {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
+
     private void captureImage() {
         // Check if CAMERA permission is granted
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)
