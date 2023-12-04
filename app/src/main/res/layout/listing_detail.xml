@@ -96,10 +96,10 @@
         </LinearLayout>
     </LinearLayout>
 
-    <fragment
+    <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/map"
+        android:id="@+id/map_container"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginTop="32dp"
@@ -110,6 +110,6 @@
         android:layout_marginTop="32dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/map"/>
+        app:layout_constraintTop_toBottomOf="@id/map_container"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

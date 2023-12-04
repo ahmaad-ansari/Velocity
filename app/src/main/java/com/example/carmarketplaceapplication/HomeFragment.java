@@ -161,8 +161,9 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
     private void navigateToCarDetailFragment(CarListModel carModel) {
         Fragment carDetailFragment = CarDetailFragment.newInstance(carModel);
         requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, carDetailFragment) // 'fragment_container' is the ID of your FrameLayout or other container
-                .addToBackStack(null) // Add this transaction to the back stack
+                .replace(R.id.fragment_container, carDetailFragment) // Use replace instead of add
+                .addToBackStack(null)
                 .commit();
     }
+
 }

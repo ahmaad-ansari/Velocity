@@ -1,5 +1,9 @@
 package com.example.carmarketplaceapplication;
 
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,18 +16,27 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.Manifest;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapReadyCallback  {
@@ -36,6 +49,10 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     private GoogleMap mMap;
     private SharedViewModel viewModel;
     private CarListModel carModel;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private Marker currentMarker;
+
+
 
 
 
@@ -66,15 +83,19 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         Button btnNext = view.findViewById(R.id.button_next);
         btnNext.setText("View");
 
-        // Get a handle to the fragment and register the callback.
-        // Use getChildFragmentManager() or getFragmentManager() based on your fragment setup
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_container);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.map_container, mapFragment)
+                    .commit();
+
             mapFragment.getMapAsync(this);
         }
 
         return view;
     }
+
 
     private void loadCarData(CarListModel carModel) {
         // Load data into AutoCompleteTextViews, EditTexts, and CheckBoxes
@@ -132,6 +153,7 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
             // If all validations pass, navigate to the next step fragment
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
+                Log.e("TEST", carModel.toString());
                 parentFragment.goToNextStep(new PostStepThreeFragment());
             }
         } else {
@@ -222,17 +244,144 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         carModel.setNavigationSystem(checkBoxNav.isChecked());
         carModel.setBluetoothConnectivity(checkBoxBT.isChecked());
 
+        // Set the default owner location to an empty string
+        String newOwnerLocation = "";
+
+        // Retrieve the latest marker if available
+        if (currentMarker != null) {
+            // Convert the marker's position to an address
+            Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(
+                        currentMarker.getPosition().latitude,
+                        currentMarker.getPosition().longitude,
+                        1
+                );
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    newOwnerLocation = address.getAddressLine(0); // Get the address line
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Update the car model's ownerLocation with the new address
+        carModel.setOwnerLocation(newOwnerLocation);
+
         // Update the ViewModel
         viewModel.setCarListModel(carModel);
+
         // If all validations pass
         return true;
     }
 
     // Get a handle to the GoogleMap object and display marker.
+    // Get a handle to the GoogleMap object and display marker
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.moveCamera(CameraUpdateFactory.
-                newLatLngZoom(new LatLng(43.874320, -79.007450), 10));
+        mMap = googleMap;
 
+        // Enable the user's location on the map
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
+
+        // Enable the user's location and move the map camera to the current location
+        mMap.setMyLocationEnabled(true);
+
+        // Assuming carModel is initialized and contains the ownerLocation
+        String ownerLocation = carModel.getOwnerLocation();
+
+        if (ownerLocation != null && !ownerLocation.isEmpty()) {
+            // Use Geocoding to convert the address (ownerLocation) to LatLng
+            Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocationName(ownerLocation, 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
+
+                    // Add a marker at the retrieved location
+                    MarkerOptions markerOptions = new MarkerOptions().position(location).draggable(true);
+                    currentMarker = mMap.addMarker(markerOptions);
+
+                    // Move camera to the retrieved location
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // If ownerLocation is null, set the map to the user's current location
+            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+                                // Add a marker at the user's current location
+                                MarkerOptions markerOptions = new MarkerOptions().position(currentLocation).draggable(true);
+                                currentMarker = mMap.addMarker(markerOptions);
+
+                                // Move camera to the user's current location
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
+                            }
+                        }
+                    });
+        }
+
+        // Set a marker drag listener to update the marker's position when dragged by the user
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                // Called when the user starts dragging the marker
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+                // Called repeatedly as the user drags the marker
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                // Called when the user finishes dragging the marker
+                currentMarker = marker; // Update the current marker
+
+                // Convert the dragged marker's position to an address and update carModel's ownerLocation
+                Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        String newOwnerLocation = address.getAddressLine(0); // Get the address line
+                        carModel.setOwnerLocation(newOwnerLocation);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, initialize the map
+                SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_container);
+                if (mapFragment != null) {
+                    mapFragment.getMapAsync(this);
+                }
+            } else {
+                // Permission denied, show a message or handle it accordingly
+                Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 }

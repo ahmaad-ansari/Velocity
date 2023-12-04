@@ -2,7 +2,8 @@ package com.example.carmarketplaceapplication;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.Uri;
+import android.location.Address;
+import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class ListingViewSetup {
 
@@ -39,7 +48,6 @@ public class ListingViewSetup {
         tvDescription = view.findViewById(R.id.tvDescription);
         tvOwnerName = view.findViewById(R.id.tvName);
         tvOwnerPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
-
 
         tvYearMakeModel.setText(carModel.getYear() + " " + carModel.getMake() + " " + carModel.getModel());
         tvPrice.setText(String.format("$%,.2f", carModel.getPrice()));
@@ -80,6 +88,41 @@ public class ListingViewSetup {
             View item = createVehicleDetailItem(llHighlightsContainer, icons[i], headings[i], details[i], context);
             llHighlightsContainer.addView(item);
         }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) ((AppCompatActivity) context).getSupportFragmentManager().findFragmentById(R.id.map_container);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.map_container, mapFragment)
+                    .commit();
+        }
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                GoogleMap mMap = googleMap;
+                setupMapForCarLocation(mMap, context, carModel);
+            }
+        });
+    }
+
+    public static void setupMapForCarLocation(GoogleMap mMap, Context context, CarListModel carModel) {
+        String ownerLocation = carModel.getOwnerLocation();
+        if (ownerLocation != null && !ownerLocation.isEmpty()) {
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocationName(ownerLocation, 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
+
+                    mMap.addMarker(new MarkerOptions().position(location).title(carModel.getYear() + " " + carModel.getMake() + " " + carModel.getModel()));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static View createVehicleDetailItem(ViewGroup parent, int iconResId, String heading, String detail, Context context) {
@@ -95,6 +138,4 @@ public class ListingViewSetup {
 
         return itemView;
     }
-
-    // Additional methods for other parts of the listing view if necessary
 }

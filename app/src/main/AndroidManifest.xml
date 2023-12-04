@@ -26,7 +26,7 @@
         tools:ignore="MissingClass">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD9FzsK6SF1ya5vra_GMnbAbk0ShU86gWU"/>
+            android:value="AIzaSyCRaoEKd98ahL3M4zKm8k5LQL4E6P_bRlc"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.carmarketplaceapplication.fileprovider"

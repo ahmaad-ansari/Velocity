@@ -15,9 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.maps.SupportMapFragment;
+
 public class CarDetailFragment extends Fragment {
 
     private static final String ARG_CAR_MODEL = "carModel";
+    private CarListModel carModel;
+
 
     public static CarDetailFragment newInstance(CarListModel carModel) {
         CarDetailFragment fragment = new CarDetailFragment();
@@ -32,34 +36,74 @@ public class CarDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_car_detail, container, false);
 
+        // Retrieve carModel from arguments
+        if (getArguments() != null) {
+            carModel = (CarListModel) getArguments().getSerializable(ARG_CAR_MODEL);
+        }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_container);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.map_container, mapFragment)
+                    .commit();
+        }
+
+        mapFragment.getMapAsync(googleMap -> {
+            if (carModel != null) {
+                ListingViewSetup.setupMapForCarLocation(googleMap, requireContext(), carModel);
+            }
+        });
+
         CarListModel carModel = null;
         if (getArguments() != null) {
             carModel = (CarListModel) getArguments().getSerializable(ARG_CAR_MODEL);
         }
 
         if (carModel != null) {
-            // Set up views to display car details
             ViewPager2 viewPager2 = view.findViewById(R.id.imageSlider);
             ListingViewSetup.initializeImageSliderWithUrls(viewPager2, carModel.getImageUrls(), getContext());
 
             ListingViewSetup.populateListingDetails(view, carModel, getContext());
-
         }
 
         return view;
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_container);
+        if (mapFragment != null) {
+            requireActivity().getSupportFragmentManager().beginTransaction().remove(mapFragment).commitAllowingStateLoss();
+        }
+    }
+
+
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button btnContact = view.findViewById(R.id.btnContact); // Replace with your actual button ID
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_container);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.map_container, mapFragment)
+                    .commit();
+        }
+
+        mapFragment.getMapAsync(googleMap -> {
+            // Setup the map based on the carModel
+            ListingViewSetup.setupMapForCarLocation(googleMap, requireContext(), carModel);
+        });
+
+        Button btnContact = view.findViewById(R.id.btnContact);
         btnContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView phoneNumberTextView = view.findViewById(R.id.tvPhoneNumber); // Replace with your actual TextView ID
+                TextView phoneNumberTextView = view.findViewById(R.id.tvPhoneNumber);
                 String phoneNumberWithFormatting = phoneNumberTextView.getText().toString();
-
-                // Remove non-numeric characters
                 String phoneNumber = phoneNumberWithFormatting.replaceAll("[^\\d]", "");
 
                 if (!TextUtils.isEmpty(phoneNumber)) {
@@ -67,8 +111,7 @@ public class CarDetailFragment extends Fragment {
                     smsIntent.setData(Uri.parse("sms:" + phoneNumber));
                     startActivity(smsIntent);
                 } else {
-                    // Handle the case where the phone number is empty or contains no digits
-                    // You might want to show a Toast or perform other actions
+                    // Handle empty phone number
                 }
             }
         });

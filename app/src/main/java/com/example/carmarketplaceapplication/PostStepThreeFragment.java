@@ -17,7 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
-public class PostStepThreeFragment extends PostStepBaseFragment implements OnMapReadyCallback {
+public class PostStepThreeFragment extends PostStepBaseFragment {
     private SharedViewModel viewModel;
     CarListModel carModel;
 
@@ -33,13 +33,6 @@ public class PostStepThreeFragment extends PostStepBaseFragment implements OnMap
 
         Button btnNext = view.findViewById(R.id.button_next);
         btnNext.setText("Post");
-
-        // Get a handle to the fragment and register the callback.
-        // Use getChildFragmentManager() or getFragmentManager() based on your fragment setup
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
 
         carModel = viewModel.getCarListModel().getValue();
         if (carModel == null) {
@@ -103,12 +96,5 @@ public class PostStepThreeFragment extends PostStepBaseFragment implements OnMap
     @Override
     protected boolean validateCurrentStep() {
         return false;
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        googleMap.moveCamera(CameraUpdateFactory.
-                newLatLngZoom(new LatLng(43.874320, -79.007450), 10));
-
     }
 }
