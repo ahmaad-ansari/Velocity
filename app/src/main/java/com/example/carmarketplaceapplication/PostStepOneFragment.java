@@ -40,23 +40,25 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class PostStepOneFragment extends PostStepBaseFragment  {
+public class PostStepOneFragment extends PostStepBaseFragment {
 
+    // Declaring UI elements
     private AutoCompleteTextView autocompleteCarMake, autocompleteCarModel, autocompleteTransmissionType, autocompleteDrivetrainType, autocompleteFuelType;
     private EditText editTextCarYear;
     private String[] carMakes, carModels, transmissionTypes, drivetrainTypes, fuelTypes;
     private View view;
 
+    // Constants for image handling
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAPTURE_IMAGE_REQUEST = 2;
     private static final int REQUEST_CAMERA_PERMISSION = 100;
     private static final int MAX_IMAGES = 10;
 
+    // Variables for image handling and display
     private String currentPhotoPath;
     private ImageAdapter imageAdapter;
     private ArrayList<String> imageUrls;
@@ -64,66 +66,67 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     private SharedViewModel viewModel;
     private CarListModel carModel;
 
-    private ArrayList<Object> imageSources; // Changed to Object to handle both Uri and String
+    // List to store image sources (either Uri or String)
+    private ArrayList<Object> imageSources;
 
-
-
-
-
+    // Constructor
     public PostStepOneFragment() {
         // Required empty public constructor
     }
 
+    // Resuming the fragment
     @Override
     public void onResume() {
         super.onResume();
-        initializeViews(view);
+        initializeViews(view); // Initializing views
         carModel = viewModel.getCarListModel().getValue();
 
+        // Load existing data for editing if available
         if (carModel != null && carModel.getCarId() != null && !carModel.getCarId().isEmpty()) {
-            // Load existing data into the fields for editing
-            Log.e("DEBUG", "LOADING MODEL");
             loadCarData(carModel);
         }
     }
 
+    // Creating the view for the fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_post_step_one, container, false);
 
+        // Initializing image section of the fragment
         initializeImageSection(view);
 
-
+        // Observing changes in image sources and updating the adapter
         viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel.getImageSources().observe(getViewLifecycleOwner(), new Observer<List<Object>>() {
             @Override
             public void onChanged(List<Object> sources) {
+                // Extracting image paths from the sources
                 List<String> imagePaths = new ArrayList<>();
                 for (Object source : sources) {
                     if (source instanceof Uri) {
-                        // It's a Uri, convert to string
+                        // If it's a Uri, convert to string and add to the list
                         imagePaths.add(((Uri) source).toString());
                     } else if (source instanceof String) {
-                        // It's already a String (URL)
+                        // If it's already a String (URL), add to the list
                         imagePaths.add((String) source);
                     }
                 }
-                // Update the adapter with the new list
+                // Updating the adapter with the new list of image paths
                 imageAdapter.updateImagePaths(imagePaths);
                 imageAdapter.notifyDataSetChanged();
             }
         });
 
-
+        // Hiding the 'Previous' button for this step
         Button btnPrevious = view.findViewById(R.id.button_previous);
         btnPrevious.setVisibility(View.GONE);
 
         return view;
     }
 
+
     private void loadCarData(CarListModel carModel) {
-        Log.e("DEBUG", carModel.toString());
         // Load data into AutoCompleteTextViews and EditTexts
         autocompleteCarMake.setText(carModel.getMake(), false);
         autocompleteCarModel.setText(carModel.getModel(), false);
@@ -132,13 +135,14 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         autocompleteDrivetrainType.setText(carModel.getDrivetrainType(), false);
         autocompleteFuelType.setText(carModel.getFuelType(), false);
 
-        // Load images if any
+        // Load images if any into the ViewModel's image sources
         if (carModel.getImageUrls() != null && !carModel.getImageUrls().isEmpty()) {
             viewModel.setImageSources(new ArrayList<>(carModel.getImageUrls()));
         }
     }
+
     private void initializeViews(View view) {
-        // Initialize AutoCompleteTextViews
+        // Initialize AutoCompleteTextViews and EditText
         autocompleteCarMake = view.findViewById(R.id.autocomplete_car_make);
         autocompleteCarModel = view.findViewById(R.id.autocomplete_car_model);
         editTextCarYear = view.findViewById(R.id.editText_car_year);
@@ -146,34 +150,36 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         autocompleteDrivetrainType = view.findViewById(R.id.autocomplete_drivetrain);
         autocompleteFuelType = view.findViewById(R.id.autocomplete_fuel_type);
 
+        // Get string arrays from resources
         carMakes = getResources().getStringArray(R.array.car_makes);
-        // Get car models for the first car make initially
-        carModels = getCarModelsForMake(0); // Assuming Toyota is the first make
-
         transmissionTypes = getResources().getStringArray(R.array.transmission_types);
         drivetrainTypes = getResources().getStringArray(R.array.drivetrain_types);
         fuelTypes = getResources().getStringArray(R.array.fuel_types);
 
-        // Set adapters for the AutoCompleteTextViews
+        // Initialize and set dropdown adapters for AutoCompleteTextViews
+        carModels = getCarModelsForMake(0); // Assuming Toyota is the first make
         setDropdownAdapter(autocompleteCarMake, carMakes);
         setDropdownAdapter(autocompleteCarModel, carModels);
         setDropdownAdapter(autocompleteTransmissionType, transmissionTypes);
         setDropdownAdapter(autocompleteDrivetrainType, drivetrainTypes);
         setDropdownAdapter(autocompleteFuelType, fuelTypes);
 
-        // Listen for changes in the car make selection
+        // Listen for changes in the car make selection to update car models dropdown
         autocompleteCarMake.setOnItemClickListener((parent, view1, position, id) -> {
             carModels = getCarModelsForMake(position);
             setDropdownAdapter(autocompleteCarModel, carModels);
         });
     }
 
+
     private void setDropdownAdapter(AutoCompleteTextView autoCompleteTextView, String[] data) {
+        // Create and set an ArrayAdapter for the AutoCompleteTextView with provided data
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_dropdown_item_1line, data);
         autoCompleteTextView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        // Filter the adapter if text is not empty
         if (!TextUtils.isEmpty(autoCompleteTextView.getText().toString())) {
             adapter.getFilter().filter(null);
         }
@@ -204,7 +210,9 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         return models;
     }
 
+
     private void initializeImageSection(View view) {
+        // Initialize RecyclerView for displaying images
         recyclerViewMedia = view.findViewById(R.id.recyclerView_media);
         imageSources = new ArrayList<>(); // Changed to Object type
         imageAdapter = new ImageAdapter(getContext(), imageSources, viewModel);
@@ -212,13 +220,15 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         recyclerViewMedia.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewMedia.setAdapter(imageAdapter);
 
+        // Button to add images
         Button btnAddImage = view.findViewById(R.id.btnAddImage);
         btnAddImage.setOnClickListener(v -> showImagePickOptions());
 
+        // Initialize the RecyclerView with placeholders
         initializeRecyclerViewWithPlaceholders(); // Now this can be called safely
     }
 
-
+    // Show options to pick images from Gallery or Camera
     private void showImagePickOptions() {
         CharSequence[] options = {"Gallery", "Camera"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -233,6 +243,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         builder.show();
     }
 
+    // Initialize the RecyclerView with placeholders for images
     private void initializeRecyclerViewWithPlaceholders() {
         for (int i = 0; i < MAX_IMAGES; i++) {
             imageSources.add(""); // Uri.EMPTY is used as a placeholder
@@ -242,37 +253,48 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         }
     }
 
-
+    // Open Gallery to select images
     private void openGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true); // Restrict to local content
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // Start from Pictures directory
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
     private void captureImage() {
+        // Check if CAMERA permission is granted
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
+            // If not, request the CAMERA permission
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA},
                     REQUEST_CAMERA_PERMISSION);
         } else {
+            // If permission is granted, start the camera intent
             startCameraIntent();
         }
     }
 
     private void startCameraIntent() {
+        // Create an intent to capture an image
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // Check if there's a camera app available to handle the intent
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
             try {
+                // Create a file to save the captured image
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Handle the error
+                // Handle errors in creating the image file
                 Log.e("PostStepOneFragment", "Error creating image file", ex);
                 return;
             }
+
+            // If the file was successfully created, proceed to capture the image
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(getContext(),
                         "com.example.carmarketplaceapplication.fileprovider", photoFile);
@@ -283,11 +305,19 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     }
 
     private File createImageFile() throws IOException {
+        // Create a unique image file name based on timestamp
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
+
+        // Get the directory where images will be saved
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        // Create a temporary image file
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        // Save the file path for later use
         currentPhotoPath = image.getAbsolutePath();
+
         return image;
     }
 
@@ -295,9 +325,12 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
+            // Check the request code to determine the source of the result
             if (requestCode == PICK_IMAGE_REQUEST) {
+                // Result from selecting image(s) from gallery
                 handleGalleryResult(data);
             } else if (requestCode == CAPTURE_IMAGE_REQUEST) {
+                // Result from capturing image using the camera
                 handleCameraResult();
             }
         }
@@ -305,25 +338,28 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
 
     private void handleGalleryResult(Intent data) {
         if (data != null && data.getClipData() != null) {
+            // Multiple images selected from gallery
             int count = data.getClipData().getItemCount();
             for (int i = 0; i < count; i++) {
                 Uri imageUri = data.getClipData().getItemAt(i).getUri();
                 addImageSourceToList(imageUri);
             }
         } else if (data != null && data.getData() != null) {
+            // Single image selected from gallery
             Uri imageUri = data.getData();
             addImageSourceToList(imageUri);
         }
     }
 
     private void handleCameraResult() {
+        // Image captured from the camera
         Uri imageUri = Uri.fromFile(new File(currentPhotoPath));
         addImageSourceToList(imageUri);
     }
 
     private void addImageSourceToList(Object imageSource) {
         if (imageSource instanceof Uri) {
-            // If it's a Uri, handle it differently
+            // If the image source is a Uri (from gallery or camera)
             Uri imageUri = (Uri) imageSource;
             if (imageSources.size() < MAX_IMAGES) {
                 imageSources.add(0, imageUri); // Add Uri to the front of the list
@@ -334,7 +370,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
                 imageSources.add(0, imageUri);
             }
         } else {
-            // Check if there are placeholders to replace
+            // Handling other types of image sources (like placeholders or other types of URIs)
             int placeholderIndex = imageSources.indexOf(""); // Assuming "" is a placeholder
             if (placeholderIndex != -1) {
                 imageSources.set(placeholderIndex, imageSource);
@@ -345,12 +381,11 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             }
         }
 
-        Log.e("DEBUG", String.valueOf(imageSources));
-
+        // Notify the adapter of changes in the image list
         imageAdapter.notifyDataSetChanged();
-        viewModel.setImageSources(new ArrayList<>(imageSources)); // Update ViewModel with new list
+        // Update the ViewModel with the updated list of image sources
+        viewModel.setImageSources(new ArrayList<>(imageSources));
     }
-
 
 
     @Override
@@ -360,24 +395,23 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             PostFragment parentFragment = (PostFragment) getParentFragment();
             if (parentFragment != null) {
                 parentFragment.goToNextStep(new PostStepTwoFragment());
-            }
-            else {
+            } else {
+                // Handle case when the parent fragment is null
             }
         } else {
             // Show error or validation feedback
-            // For example, you can show a Toast, Snackbar, or log a message
             Toast.makeText(getContext(), "Please check the input fields.", Toast.LENGTH_SHORT).show();
         }
     }
 
     protected boolean validateCurrentStep() {
+        // Retrieve the current car model from ViewModel or create a new one if it doesn't exist
         carModel = viewModel.getCarListModel().getValue();
         if (carModel == null) {
             carModel = new CarListModel();
         }
-        Log.d("DEBUG","Current Car Model: " + carModel);
 
-
+        // Retrieve input values from the UI fields
         String make = autocompleteCarMake.getText().toString().trim();
         String model = autocompleteCarModel.getText().toString().trim();
         String yearString = editTextCarYear.getText().toString().trim();
@@ -429,6 +463,7 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             return false;
         }
 
+        // Set owner details to the car model (function setOwnerDetailsToListing() not provided)
         setOwnerDetailsToListing(carModel);
 
         // If all validations pass, set values to carModel
@@ -438,18 +473,17 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         carModel.setTransmissionType(transmissionType);
         carModel.setDrivetrainType(drivetrainType);
         carModel.setFuelType(fuelType);
-//        carModel.setImageUrls(new ArrayList<String>(imageSources));
 
+        // Extract URLs from imageSources and set them to carModel
         List<String> urls = new ArrayList<>();
         for (Object imageSource : imageSources) {
             if (imageSource instanceof String) {
                 urls.add((String) imageSource);
             }
-            // If you also want to handle Uri objects, you can add an else-if block here
-            // to convert Uri to String or handle them as per your requirement.
         }
         carModel.setImageUrls(urls);
 
+        // Update ViewModel with the modified car model
         viewModel.setCarListModel(carModel);
 
         // If all validations pass
@@ -457,30 +491,36 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
     }
 
     private void setOwnerDetailsToListing(CarListModel carModel) {
+        // Get the current user from Firebase Authentication
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null) {
+            // If the current user exists, retrieve the Firebase Firestore instance
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String userId = currentUser.getUid();
 
+            // Create a reference to the user's document in the Firestore "users" collection
             DocumentReference userRef = db.collection("users").document(userId);
+
+            // Fetch user details from Firestore
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
+                    // Retrieve user details from the document snapshot
                     String firstName = documentSnapshot.getString("firstName");
                     String lastName = documentSnapshot.getString("lastName");
                     String email = documentSnapshot.getString("email");
                     String userPhoneNumber = documentSnapshot.getString("phoneNumber");
 
+                    // Format the user's phone number as (XXX) XXX-XXXX
                     String formattedPhoneNumber = String.format("(%s) %s-%s",
                             userPhoneNumber.substring(0, 3),
                             userPhoneNumber.substring(3, 6),
                             userPhoneNumber.substring(6));
 
-
+                    // Set the owner details to the CarListModel
                     carModel.setOwnerName(firstName + " " + lastName);
                     carModel.setOwnerEmail(email);
                     carModel.setOwnerContactNumber(formattedPhoneNumber);
-
                 } else {
                     // Document does not exist
                     Log.d("TAG", "No such document");
@@ -491,5 +531,4 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
             });
         }
     }
-
 }

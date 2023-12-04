@@ -14,11 +14,11 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+
 public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.ViewHolder> {
 
-    private Context context;
-    private List<String> imageUrls;
-
+    private final Context context; // Context for inflating views
+    private final List<String> imageUrls; // List of image URLs to display
 
     public ImageSliderAdapter(Context context, List<String> imageUrls) {
         this.context = context;
@@ -28,6 +28,7 @@ public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflating the layout for individual slider items
         View view = LayoutInflater.from(context).inflate(R.layout.item_slider_image, parent, false);
         return new ViewHolder(view);
     }
@@ -35,8 +36,7 @@ public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String imageUrl = imageUrls.get(position);
-        // Use Glide or another image loading library to load the image
-        // Glide can handle both URL strings and URI strings
+        // Use an image loading library like Glide to load images from URLs into ImageView
         Glide.with(holder.imageView.getContext())
                 .load(imageUrl)
                 .into(holder.imageView);
@@ -47,8 +47,9 @@ public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.
         return imageUrls.size();
     }
 
+    // ViewHolder for the adapter to hold ImageView
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView imageView; // ImageView to display images
 
         public ViewHolder(View itemView) {
             super(itemView);

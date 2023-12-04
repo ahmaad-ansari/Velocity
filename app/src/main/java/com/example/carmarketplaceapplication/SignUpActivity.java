@@ -16,8 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
-
 public class SignUpActivity extends AppCompatActivity {
 
     private TextInputLayout mEmailLayout, mPasswordLayout, mFirstNameLayout, mLastNameLayout, mAddressLayout, mPhoneLayout;
@@ -51,11 +49,13 @@ public class SignUpActivity extends AppCompatActivity {
         Button mSignUpButton = findViewById(R.id.button_sign_up);
         TextView mLoginTextView = findViewById(R.id.textView_login);
 
+        // Set onClickListeners for sign-up and login
         mSignUpButton.setOnClickListener(view -> attemptSignUp());
         mLoginTextView.setOnClickListener(view -> navigateToLogin());
     }
 
     private void attemptSignUp() {
+        // Validate form fields
         boolean validForm = validateForm(
                 mFirstNameField.getText().toString().trim(),
                 mLastNameField.getText().toString().trim(),

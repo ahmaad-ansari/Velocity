@@ -9,6 +9,4 @@
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment" />
 
-    <!-- You can add any other views on top of the map if needed -->
-
 </FrameLayout>

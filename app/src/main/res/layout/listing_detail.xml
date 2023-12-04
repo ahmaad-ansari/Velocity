@@ -40,9 +40,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Additional Details -->
-    <!-- Include TextViews for each property like Year, Color, Odometer, etc. -->
-
     <!-- Description -->
     <LinearLayout
         android:id="@+id/llDescription"

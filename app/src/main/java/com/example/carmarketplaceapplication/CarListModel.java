@@ -7,29 +7,29 @@ import java.util.List;
 
 public class CarListModel implements Serializable {
 
-    private String carId;//=========================
-    private String make;//
-    private String model;//
-    private int year;//
-    private String color;//
-    private double odometer;//
-    private double price;//
-    private String description;//
-    private List<Uri> imageUris;//=========================
+    private String carId;
+    private String make;
+    private String model;
+    private int year;
+    private String color;
+    private double odometer;
+    private double price;
+    private String description;
+    private List<Uri> imageUris;
     private List<String> imageUrls;
-    private List<Uri> videoUris;//=========================
-    private String ownerName;//=========================
-    private String ownerContactNumber;//=========================
-    private String ownerEmail;//=========================
-    private String ownerLocation;//=========================
-    private String transmissionType;//
-    private String drivetrainType;//
-    private String fuelType;//
-    private String numberOfDoors;//
-    private String numberOfSeats;//
-    private boolean airConditioning;//
-    private boolean navigationSystem;//
-    private boolean bluetoothConnectivity;//
+    private List<Uri> videoUris;
+    private String ownerName;
+    private String ownerContactNumber;
+    private String ownerEmail;
+    private String ownerLocation;
+    private String transmissionType;
+    private String drivetrainType;
+    private String fuelType;
+    private String numberOfDoors;
+    private String numberOfSeats;
+    private boolean airConditioning;
+    private boolean navigationSystem;
+    private boolean bluetoothConnectivity;
 
     public CarListModel() {
         this.carId = null;
@@ -114,21 +114,11 @@ public class CarListModel implements Serializable {
         this.description = description;
     }
 
-    public void setImageUris(List<Uri> imageUris) {
-        this.imageUris = imageUris;
-    }
-
-    public void setVideoUris(List<Uri> videoUris) {
-        this.videoUris = videoUris;
-    }
-
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
     }
 
-    public void setOwnerContactNumber(String ownerContactNumber) {
-        this.ownerContactNumber = ownerContactNumber;
-    }
+    public void setOwnerContactNumber(String ownerContactNumber) { this.ownerContactNumber = ownerContactNumber; }
 
     public void setOwnerEmail(String ownerEmail) {
         this.ownerEmail = ownerEmail;
@@ -138,9 +128,7 @@ public class CarListModel implements Serializable {
         this.ownerLocation = ownerLocation;
     }
 
-    public void setTransmissionType(String transmissionType) {
-        this.transmissionType = transmissionType;
-    }
+    public void setTransmissionType(String transmissionType) { this.transmissionType = transmissionType; }
 
     public void setDrivetrainType(String drivetrainType) {
         this.drivetrainType = drivetrainType;
@@ -158,17 +146,11 @@ public class CarListModel implements Serializable {
         this.numberOfSeats = numberOfSeats;
     }
 
-    public void setAirConditioning(boolean airConditioning) {
-        this.airConditioning = airConditioning;
-    }
+    public void setAirConditioning(boolean airConditioning) { this.airConditioning = airConditioning; }
 
-    public void setNavigationSystem(boolean navigationSystem) {
-        this.navigationSystem = navigationSystem;
-    }
+    public void setNavigationSystem(boolean navigationSystem) { this.navigationSystem = navigationSystem; }
 
-    public void setBluetoothConnectivity(boolean bluetoothConnectivity) {
-        this.bluetoothConnectivity = bluetoothConnectivity;
-    }
+    public void setBluetoothConnectivity(boolean bluetoothConnectivity) { this.bluetoothConnectivity = bluetoothConnectivity; }
 
     public List<String> getImageUrls() {
         return imageUrls;
@@ -208,14 +190,6 @@ public class CarListModel implements Serializable {
 
     public String getDescription() {
         return description;
-    }
-
-    public List<Uri> getImageUris() {
-        return imageUris;
-    }
-
-    public List<Uri> getVideoUris() {
-        return videoUris;
     }
 
     public String getOwnerName() {

@@ -36,6 +36,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editText_first_name"
                     android:layout_width="match_parent"
+                    android:background="@color/white"
+
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -54,6 +56,8 @@
                     android:id="@+id/editText_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
+
                     android:inputType="textPersonName"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -71,6 +75,8 @@
                 android:id="@+id/editText_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+
                 android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,6 +92,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText_phone_number"
                 android:layout_width="match_parent"
+                android:background="@color/white"
+
                 android:layout_height="wrap_content"
                 android:inputType="phone"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -102,6 +110,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText_password"
                 android:layout_width="match_parent"
+                android:background="@color/white"
+
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>

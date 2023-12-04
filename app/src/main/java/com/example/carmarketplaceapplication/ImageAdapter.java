@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-    private final List<Object> imageSources; // Updated to List<Object> to handle both Uri and String
-    private final Context context;
-    private final LayoutInflater inflater;
-    private final SharedViewModel viewModel;
+    private final List<Object> imageSources; // Stores a list of image sources (URIs or Strings)
+    private final Context context; // Context for inflating views
+    private final LayoutInflater inflater; // Inflater for inflating layout for items
+    private final SharedViewModel viewModel; // ViewModel for communication between fragments
 
     public ImageAdapter(Context context, List<Object> imageSources, SharedViewModel viewModel) {
         this.context = context;
@@ -35,6 +35,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflating the layout for individual image items
         View view = inflater.inflate(R.layout.grid_item_image, parent, false);
         return new ViewHolder(view);
     }
@@ -42,8 +43,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Object imageSource = imageSources.get(position);
+        // Handling different types of image sources: Uri or String
         if (imageSource instanceof Uri) {
             Uri imageUri = (Uri) imageSource;
+            // Load image from Uri using Glide library
             Glide.with(context)
                     .load(imageUri)
                     .placeholder(R.drawable.placeholder_image)
@@ -51,14 +54,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         } else if (imageSource instanceof String) {
             String imageUrl = (String) imageSource;
             if (!TextUtils.isEmpty(imageUrl) && !imageUrl.equals("placeholder")) {
+                // Load image from URL using Glide library if not a placeholder
                 Glide.with(context)
                         .load(imageUrl)
                         .placeholder(R.drawable.placeholder_image)
                         .into(holder.imageView);
             } else {
+                // Set a placeholder image if the URL is empty or represents a placeholder
                 holder.imageView.setImageResource(R.drawable.placeholder_image);
             }
         }
+        // Handle click on an image to prompt for removal
         holder.imageView.setOnClickListener(v -> showRemoveDialog(position, holder));
     }
 
@@ -67,12 +73,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return imageSources.size();
     }
 
+    // Update the image paths in the adapter
     public void updateImagePaths(List<String> newImagePaths) {
         this.imageSources.clear();
         this.imageSources.addAll(newImagePaths);
         notifyDataSetChanged();
     }
 
+    // Display a dialog to confirm image removal
     private void showRemoveDialog(int position, ViewHolder holder) {
         new AlertDialog.Builder(context)
                 .setTitle("Remove Image")
@@ -95,9 +103,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .show();
     }
 
-
+    // ViewHolder for the adapter to hold ImageView
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView imageView; // ImageView to display images
 
         public ViewHolder(View itemView) {
             super(itemView);

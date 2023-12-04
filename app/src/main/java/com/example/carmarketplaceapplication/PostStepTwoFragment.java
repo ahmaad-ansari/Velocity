@@ -52,11 +52,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private Marker currentMarker;
 
-
-
-
-
-
     public PostStepTwoFragment() {
         // Required empty public constructor
     }
@@ -96,7 +91,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         return view;
     }
 
-
     private void loadCarData(CarListModel carModel) {
         // Load data into AutoCompleteTextViews, EditTexts, and CheckBoxes
         autocompleteCarColor.setText(carModel.getColor(), false);
@@ -128,7 +122,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         carColors = getResources().getStringArray(R.array.car_colors);
         numberOfDoors = getResources().getStringArray(R.array.car_doors);
         numberOfSeats = getResources().getStringArray(R.array.car_seats);
-
 
         // Set adapters for the AutoCompleteTextViews
         setDropdownAdapter(autocompleteCarColor, carColors);
@@ -165,8 +158,8 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
 
 
 
-    protected boolean validateCurrentStep() {
 
+    protected boolean validateCurrentStep() {
         // Retrieve the current car model from ViewModel or create a new one
         CarListModel carModel = viewModel.getCarListModel().getValue();
         if (carModel == null) {
@@ -174,24 +167,27 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         }
         Log.d("DEBUG","Current Car Model: " + carModel);
 
-
         // Perform validation logic here and return true if everything is correct
 
+        // Check if car color is empty
         if (autocompleteCarColor.getText().toString().isEmpty()) {
             autocompleteCarColor.requestFocus();
             return false;
         }
 
+        // Check if number of doors is empty
         if (autocompleteNumberOfDoors.getText().toString().isEmpty()) {
             autocompleteNumberOfDoors.requestFocus();
             return false;
         }
 
+        // Check if number of seats is empty
         if (autocompleteNumberOfSeats.getText().toString().isEmpty()) {
             autocompleteNumberOfSeats.requestFocus();
             return false;
         }
 
+        // Validate and handle odometer input
         String odometerString = editTextOdometer.getText().toString().trim();
         if (TextUtils.isEmpty(odometerString) || !odometerString.matches("\\d+")) {
             editTextPrice.requestFocus();
@@ -210,6 +206,7 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
             return false;
         }
 
+        // Validate and handle price input
         String priceString = editTextPrice.getText().toString().trim();
         if (TextUtils.isEmpty(priceString) || !priceString.matches("\\d+")) {
             editTextPrice.requestFocus();
@@ -228,6 +225,7 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
             return false;
         }
 
+        // Check if description is empty
         if (editTextDescription.getText().toString().isEmpty()) {
             editTextDescription.requestFocus();
             return false;
@@ -276,7 +274,6 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
         return true;
     }
 
-    // Get a handle to the GoogleMap object and display marker.
     // Get a handle to the GoogleMap object and display marker
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -284,6 +281,7 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
 
         // Enable the user's location on the map
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission if not granted
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             return;
         }
@@ -369,9 +367,11 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Check if the permission request code matches the location permission request code
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            // Check if the permission is granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, initialize the map
+                // Permission granted, initialize the map if available
                 SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_container);
                 if (mapFragment != null) {
                     mapFragment.getMapAsync(this);
@@ -382,6 +382,4 @@ public class PostStepTwoFragment extends PostStepBaseFragment implements OnMapRe
             }
         }
     }
-
-
 }

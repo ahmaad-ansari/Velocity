@@ -17,9 +17,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize ViewModel
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
-
+        // Set up bottom navigation view
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
@@ -30,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Bottom navigation item click listener
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
                 Fragment selectedFragment = null;
 
+                // Handle navigation item clicks
                 if (item.getItemId() == R.id.nav_home) {
                     viewModel.clearImageSources();
                     selectedFragment = new HomeFragment();
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     // Handle other menu items
                 }
 
+                // Replace fragment when an item is selected
                 if (selectedFragment != null) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
@@ -57,19 +61,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             };
 
-    public void showHomeFragment() {
-        viewModel.clearImageSources();
-        HomeFragment homeFragment = new HomeFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, homeFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed
-                .commit();
-    }
-
+    // Method to display the post fragment
     public void showPostFragment() {
         viewModel.clearImageSources();
         PostFragment postFragment = new PostFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, postFragment) // 'fragment_container' is your FrameLayout ID in your activity layout where fragments are placed
+                .replace(R.id.fragment_container, postFragment)
                 .commit();
     }
 }

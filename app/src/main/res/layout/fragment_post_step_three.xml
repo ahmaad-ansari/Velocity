@@ -11,8 +11,6 @@
         android:padding="16dp"
         android:background="@color/backgroundColor">
 
-        <!-- Include detailed listing view -->
-
         <!-- Include navigation buttons -->
         <include
             layout="@layout/listing_detail"

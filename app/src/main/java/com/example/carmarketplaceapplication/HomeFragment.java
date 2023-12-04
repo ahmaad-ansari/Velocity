@@ -1,7 +1,5 @@
 package com.example.carmarketplaceapplication;
 
-import static android.icu.lang.UCharacter.DecompositionType.SMALL;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,33 +7,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+// Fragment displaying car listings and providing filtering functionality
 public class HomeFragment extends Fragment implements FilterBottomSheetFragment.FilterListener {
 
-    private RecyclerView featuredCarsRecyclerView;
+    // RecyclerViews and adapters for displaying car listings
     private RecyclerView regularCarsRecyclerView;
-    private FeaturedCarsAdapter featuredCarsAdapter;
     private RegularCarsAdapter regularCarsAdapter;
     private List<CarListModel> fullCarList = new ArrayList<>();
-
+    private List<String> videoUrls = new ArrayList<>();
 
     @Nullable
     @Override
@@ -43,23 +35,19 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Initialize the RecyclerViews
-        featuredCarsRecyclerView = view.findViewById(R.id.featuredListingsRecyclerView);
         regularCarsRecyclerView = view.findViewById(R.id.regularListingsRecyclerView);
 
         // Setup the RecyclerViews
-//        setupFeaturedCarsRecyclerView();
         setupRegularCarsRecyclerView();
+
+        // Load initial car listings
         loadCarListings();
 
-        // In HomeFragment
-        // Inside your activity or fragment
-        
-
-
-        
+        // Set up filter button
         ImageButton filterButton = view.findViewById(R.id.filter_button);
         filterButton.setOnClickListener(v -> showFilterBottomSheet());
 
+        // Set up search bar text listener for filtering
         EditText searchBar = view.findViewById(R.id.search_bar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,60 +62,46 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
             }
         });
 
-
         return view;
     }
 
+    // Show the filter bottom sheet to apply filters
     private void showFilterBottomSheet() {
         FilterBottomSheetFragment filterFragment = FilterBottomSheetFragment.newInstance(this);
         filterFragment.show(getChildFragmentManager(), filterFragment.getTag());
     }
 
+    // Callback method when filters are applied
     @Override
     public void onFiltersApplied(FilterBottomSheetFragment.FilterParams filterParams) {
         FirebaseDataHandler dataHandler = new FirebaseDataHandler();
         dataHandler.fetchFilteredCarListings(filterParams, new FirebaseDataHandler.FetchDataCallback() {
             @Override
             public void onSuccess(List<CarListModel> carList) {
-                // Update your RecyclerViews with the filtered list
+                // Update RecyclerViews with the filtered list
                 regularCarsAdapter.setCarListings(carList);
             }
 
             @Override
             public void onFailure(Exception exception) {
-                // Handle errors
+                // Handle errors in fetching filtered car listings
                 Log.e("HomeFragment", "Error fetching filtered car listings", exception);
             }
         });
     }
 
-
+    // Filter car listings based on a search query
     private void filterCarListings(String query) {
-        // Filter the car listings based on the query
         List<CarListModel> filteredList = new ArrayList<>();
         for (CarListModel car : fullCarList) {
             if (car.getMake().toLowerCase().contains(query.toLowerCase()) || car.getModel().toLowerCase().contains(query.toLowerCase())) {
                 filteredList.add(car);
             }
         }
-
-        // Update your RecyclerViews with the filtered list
-//        featuredCarsAdapter.setCarListings(filteredList);
         regularCarsAdapter.setCarListings(filteredList);
     }
 
-
-    private void setupFeaturedCarsRecyclerView() {
-        featuredCarsAdapter = new FeaturedCarsAdapter(new FeaturedCarsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(CarListModel item) {
-                navigateToCarDetailFragment(item);
-            }
-        });
-        featuredCarsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        featuredCarsRecyclerView.setAdapter(featuredCarsAdapter);
-    }
-
+    // Initialize RecyclerView for regular car listings
     private void setupRegularCarsRecyclerView() {
         regularCarsAdapter = new RegularCarsAdapter(new RegularCarsAdapter.OnItemClickListener() {
             @Override
@@ -139,25 +113,26 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
         regularCarsRecyclerView.setAdapter(regularCarsAdapter);
     }
 
+    // Load car listings from Firebase
     private void loadCarListings() {
         FirebaseDataHandler dataHandler = new FirebaseDataHandler();
         dataHandler.fetchCarListings(new FirebaseDataHandler.FetchDataCallback() {
             @Override
             public void onSuccess(List<CarListModel> carList) {
                 fullCarList = carList;
-                // Update your RecyclerViews here
-//                featuredCarsAdapter.setCarListings(carList); // Assuming setCarListings is a method in your adapter
-                regularCarsAdapter.setCarListings(carList); // Same as above
+                // Update RecyclerViews with the loaded car listings
+                regularCarsAdapter.setCarListings(carList);
             }
 
             @Override
             public void onFailure(Exception exception) {
-                // Handle the error
+                // Handle errors in fetching car listings
                 Log.e("HomeFragment", "Error fetching car listings", exception);
             }
         });
     }
 
+    // Navigate to the car detail fragment upon selecting a car
     private void navigateToCarDetailFragment(CarListModel carModel) {
         Fragment carDetailFragment = CarDetailFragment.newInstance(carModel);
         requireActivity().getSupportFragmentManager().beginTransaction()
@@ -165,5 +140,6 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
                 .addToBackStack(null)
                 .commit();
     }
-
 }
+
+
