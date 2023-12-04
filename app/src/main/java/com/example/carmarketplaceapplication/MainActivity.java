@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new HomeFragment();
                 } else if (item.getItemId() == R.id.nav_post) {
                     selectedFragment = new PostFragment();
-                } else if (item.getItemId() == R.id.nav_search) {
+                } else if (item.getItemId() == R.id.nav_map) {
                     viewModel.clearImageSources();
-                    selectedFragment = new SearchFragment();
+                    selectedFragment = new MapFragment();
                 } else if (item.getItemId() == R.id.nav_profile) {
                     viewModel.clearImageSources();
                     selectedFragment = new ProfileFragment();

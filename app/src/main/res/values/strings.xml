@@ -70,5 +70,6 @@
     <string name="your_listings">My Listings</string>
     <string name="create_post"></string>
     <string name="delete_account">Delete</string>
+    <string name="map">Map</string>
 
 </resources>
