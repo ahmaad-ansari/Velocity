@@ -32,14 +32,13 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
             android:src="@drawable/ic_filter" />
-
-
     </LinearLayout>
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,13 +49,23 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
-            <!-- Featured Cars Section -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Featured"
-                android:textStyle="bold"/>
-            <include layout="@layout/featured_listings" />
+<!--            &lt;!&ndash; Featured Cars Section &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Featured"-->
+<!--                android:textStyle="bold"/>-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--                xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--                android:id="@+id/videosRecyclerView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+<!--                android:layout_marginTop="8dp" />-->
+
 
             <!-- Regular Listings Section -->
             <TextView

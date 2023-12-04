@@ -8,26 +8,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.carmarketplaceapplication.CarListModel;
-import com.example.carmarketplaceapplication.FirebaseDataHandler;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FirebaseDataHandler firebaseDataHandler;
+    private Map<Marker, CarListModel> markerCarMap = new HashMap<>();
+    private View infoWindowView; // View for custom info window
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +45,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
+        infoWindowView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_info_window, null);
+
+
         firebaseDataHandler = new FirebaseDataHandler();
         fetchCarLocations();
 
@@ -47,6 +57,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
     }
 
     private void fetchCarLocations() {
@@ -71,8 +82,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (car.getOwnerLocation() != null && !car.getOwnerLocation().isEmpty()) {
                 LatLng location = getLocationFromAddress(requireContext(), car.getOwnerLocation());
                 if (location != null && mMap != null) {
-                    mMap.addMarker(new MarkerOptions().position(location).title(car.getMake() + " " + car.getModel()));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(location).title(car.getMake() + " " + car.getModel()));
                     markerPositions.add(location);
+                    markerCarMap.put(marker, car);
                 }
             }
         }
@@ -82,7 +94,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    // Method to calculate bounding box and zoom to markers' bounds
     private void zoomToMarkersBounds(List<LatLng> markerPositions) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
@@ -91,14 +102,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         LatLngBounds bounds = builder.build();
-        int padding = 100; // Adjust padding as needed
+        int padding = 100;
 
         if (mMap != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         }
     }
 
-    // Method to convert address to LatLng
     private LatLng getLocationFromAddress(Context context, String strAddress) {
         Geocoder coder = new Geocoder(context);
         List<Address> address;
@@ -120,13 +130,58 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return p1;
     }
+
+    private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            return null; // Use default info window background
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            CarListModel car = markerCarMap.get(marker);
+            if (car != null) {
+                // Inflate the custom info window layout if it's not already inflated
+                if (infoWindowView == null) {
+                    infoWindowView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_info_window, null);
+                }
+
+                // Bind car details to the custom info window layout
+                TextView carYearMakeModel = infoWindowView.findViewById(R.id.text_car_year_make_model);
+                carYearMakeModel.setText(car.getYear() + " " + car.getMake() + " " + car.getModel());
+
+                TextView carPrice = infoWindowView.findViewById(R.id.text_car_price);
+                carPrice.setText("$" + String.format("%.0f", car.getPrice()));
+
+                TextView carOdometer = infoWindowView.findViewById(R.id.text_car_odometer);
+                carOdometer.setText(String.format("%.0f", car.getOdometer()) + " km");
+
+                // Handle clicks for navigating to the car detail fragment
+                infoWindowView.setOnClickListener(v -> navigateToCarDetailFragment(car));
+
+                // Set image if available
+                ImageView carImage = infoWindowView.findViewById(R.id.image_car);
+                List<String> imageUrls = car.getImageUrls();
+                if (imageUrls != null && !imageUrls.isEmpty()) {
+                    String imageUrl = imageUrls.get(0);
+                    Picasso.get()
+                            .load(imageUrl)
+                            .placeholder(R.drawable.placeholder_image)
+                            .error(R.drawable.error_image)
+                            .into(carImage);
+                }
+
+                return infoWindowView;
+            }
+            return null;
+        }
+    }
+
+
+    // Method to handle navigation to the car detail fragment
+    private void navigateToCarDetailFragment(CarListModel car) {
+        // Implement navigation logic to the car detail fragment here
+        // For example, if you're using Navigation Component:
+    }
 }
-
-
-
-
-
-
-
-
-

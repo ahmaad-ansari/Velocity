@@ -248,8 +248,11 @@ public class PostStepOneFragment extends PostStepBaseFragment  {
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true); // Restrict to local content
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // Start from Pictures directory
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
+
 
     private void captureImage() {
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA)

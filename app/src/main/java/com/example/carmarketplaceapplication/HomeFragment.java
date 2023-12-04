@@ -1,7 +1,5 @@
 package com.example.carmarketplaceapplication;
 
-import static android.icu.lang.UCharacter.DecompositionType.SMALL;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,32 +7,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements FilterBottomSheetFragment.FilterListener {
 
-    private RecyclerView featuredCarsRecyclerView;
+    private RecyclerView videosRecyclerView;
     private RecyclerView regularCarsRecyclerView;
-    private FeaturedCarsAdapter featuredCarsAdapter;
     private RegularCarsAdapter regularCarsAdapter;
     private List<CarListModel> fullCarList = new ArrayList<>();
+    private List<String> videoUrls = new ArrayList<>();
+
 
 
     @Nullable
@@ -43,20 +36,14 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Initialize the RecyclerViews
-        featuredCarsRecyclerView = view.findViewById(R.id.featuredListingsRecyclerView);
         regularCarsRecyclerView = view.findViewById(R.id.regularListingsRecyclerView);
 
         // Setup the RecyclerViews
-//        setupFeaturedCarsRecyclerView();
         setupRegularCarsRecyclerView();
+
         loadCarListings();
 
-        // In HomeFragment
-        // Inside your activity or fragment
-        
 
-
-        
         ImageButton filterButton = view.findViewById(R.id.filter_button);
         filterButton.setOnClickListener(v -> showFilterBottomSheet());
 
@@ -73,7 +60,6 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
                 filterCarListings(editable.toString());
             }
         });
-
 
         return view;
     }
@@ -112,20 +98,7 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
         }
 
         // Update your RecyclerViews with the filtered list
-//        featuredCarsAdapter.setCarListings(filteredList);
         regularCarsAdapter.setCarListings(filteredList);
-    }
-
-
-    private void setupFeaturedCarsRecyclerView() {
-        featuredCarsAdapter = new FeaturedCarsAdapter(new FeaturedCarsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(CarListModel item) {
-                navigateToCarDetailFragment(item);
-            }
-        });
-        featuredCarsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        featuredCarsRecyclerView.setAdapter(featuredCarsAdapter);
     }
 
     private void setupRegularCarsRecyclerView() {
@@ -146,8 +119,7 @@ public class HomeFragment extends Fragment implements FilterBottomSheetFragment.
             public void onSuccess(List<CarListModel> carList) {
                 fullCarList = carList;
                 // Update your RecyclerViews here
-//                featuredCarsAdapter.setCarListings(carList); // Assuming setCarListings is a method in your adapter
-                regularCarsAdapter.setCarListings(carList); // Same as above
+                regularCarsAdapter.setCarListings(carList);
             }
 
             @Override

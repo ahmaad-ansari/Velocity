@@ -1,0 +1,53 @@
+<!-- custom_info_window.xml -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"> <!-- Reference to your custom background drawable -->
+
+    <!-- Car Image -->
+    <ImageView
+        android:id="@+id/image_car"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_image"/> <!-- Add default car image -->
+
+    <!-- Car Details -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <!-- Car Year, Make, Model -->
+        <TextView
+            android:id="@+id/text_car_year_make_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
+
+        <!-- Car Price -->
+        <TextView
+            android:id="@+id/text_car_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="4dp"/>
+
+        <!-- Car Odometer -->
+        <TextView
+            android:id="@+id/text_car_odometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+</LinearLayout>

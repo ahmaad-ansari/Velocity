@@ -60,6 +60,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
+    implementation("com.squareup.picasso:picasso:2.8")
+
     implementation("androidx.recyclerview:recyclerview:1.2.1")
 
     // Firebase
@@ -71,6 +73,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:latest_version")
+
+    implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")
 
 
     implementation("com.googlecode.libphonenumber:libphonenumber:8.12.36")
